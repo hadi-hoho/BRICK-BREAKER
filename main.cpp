@@ -1,25 +1,38 @@
+// Created on A.R.M1111
+
 #include <iostream>
+
+#define maxx	30
+#define maxy	50
+#define minx	0
+#define miny	0
 using namespace std;
 
 bool print_screen ()
 {
     //defing the array
-    char screen[30][50];
-    for (int i = 0; i < 30; i++)
+    char screen[maxx][maxy];
+    for (int i = minx; i < maxx; i++)
     {
-        if (i==29 || i==0)
+        if (i==(maxx-1) || i==minx)
         {
-            for (int j = 0; j < 50; j++)
+            for (int j = miny; j < maxy; j++)
             {
                 screen[i][j]= '_';
             }
         }
-        else{
-            for (int j = 0; j < 50; j++)
+        else
+		{
+            for (int j = miny; j < maxy; j++)
             {
                 screen[i][j]= ' ';
             }
         }
+    }
+    for (int i=minx;i<maxx;i++)
+    {
+     	screen[i][0]='|';
+    	screen[i][49]='|';
     }
     screen[25][10]='i';
     screen[25][11]='m';
@@ -30,9 +43,9 @@ bool print_screen ()
     screen[25][16]='e';
     screen[25][17]='!';
     //printing the array
-    for (int i = 0; i < 30; i++)
+    for (int i = minx; i < maxx; i++)
     {
-        for (int j = 0; j < 50; j++)
+        for (int j = miny; j < maxy; j++)
         {
             cout<<screen[i][j];
         }
@@ -46,4 +59,5 @@ int main()
     int a;
     print_screen();
     cin>>a;
+    return 0;
 }
