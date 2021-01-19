@@ -16,8 +16,8 @@
 
 #define north_east 1
 #define north_west 2
-#define south_east 3
-#define south_west 4
+#define south_west 3
+#define south_east 4
 using namespace std;
 
 struct cordinate
