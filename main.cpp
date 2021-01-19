@@ -1,6 +1,8 @@
 // Created on A.R.M1111
 
 #include <iostream>
+//conio.h for getch and detection of pressing any key
+#include <conio.h>
 
 #define maxx	30
 #define maxy	50
@@ -56,8 +58,23 @@ bool print_screen ()
 
 int main()
 {
-    int a;
+
     print_screen();
-    cin>>a;
+
+    char pressed_key ;
+    while (1)
+    {
+        pressed_key=getch();
+        if (pressed_key == 'd')
+        {
+            cout<<"right!"<<endl;
+        }
+        else if (pressed_key =='a')
+        {
+            cout<<"left!"<<endl;
+        }
+
+    }
+    
     return 0;
 }
