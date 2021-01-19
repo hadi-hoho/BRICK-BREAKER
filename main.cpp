@@ -1,4 +1,4 @@
-// Created on A.R.M1111
+
 
 #include <iostream>
 //conio.h for getch and detection of pressing any key
@@ -14,13 +14,10 @@
 #define slider_start_x	20
 #define slider_y		28
 
-#define ball_start_x 14
-#define ball_start_y 27
-
 #define north_east 1
 #define north_west 2
-#define south_west 3
-#define south_east 4
+#define south_east 3
+#define south_west 4
 
 #define bricks_length	3
 #define bricks_width	2
@@ -32,11 +29,6 @@
 #define bricks_row3		15
 #define bricks_culomn3	30
 using namespace std;
-
-//defing the array
-char screen[maxy][maxx];
-
-
 //struct of slider
 struct cordinate
 {
@@ -44,57 +36,69 @@ struct cordinate
 
 }slider;
 
-//struct of bricks
 struct bricks
 {
 	int x;
 	int y;
 	bool visibility=true;
 }brick[bricks_number];
-
 //struct of ball
+
 struct ball
 {
-    int heading = north_east;
+    int heading=north_east; // 1= up-right 2=up-left 3=down-left 4=down-right
     bool visible = true;
-    int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
-    int pos_y = ball_start_y; 
+    int pos_x = ((maxx/2) -1); //index of posision of ball , in the middle bottom for defualt (higher than slider)
+    int pos_y = maxy-2; 
     char c = 'o';
 };
 
-//move_ball moves the ball according to it's heading
-void move_ball(ball *target_ball)
+//add_ball adds a new ball to the screen
+ball add_ball (char **screen)
 {
-    switch (target_ball->heading)
+    ball new_ball;
+    screen[new_ball.pos_y][new_ball.pos_x] = new_ball.c;
+    return new_ball;
+}
+
+//move_ball moves the ball according to it's heading
+ball move_ball(ball target_ball,char **screen)
+{
+    switch (target_ball.heading)
     {
         case north_east: 
         {
-            target_ball->pos_x ++ ;
-            target_ball->pos_y -- ;
-            break;
+            screen[target_ball.pos_y][target_ball.pos_x] = ' ';
+            screen[target_ball.pos_y - 1][target_ball.pos_x + 1] = target_ball.c;
+            target_ball.pos_x++;
+            target_ball.pos_y--;
         }
         case north_west:
         {
-            target_ball->pos_x -- ;
-            target_ball->pos_y -- ;
-            break;
+            screen[target_ball.pos_y][target_ball.pos_x] = ' ';
+            screen[target_ball.pos_y - 1][target_ball.pos_x - 1] = target_ball.c;
+            target_ball.pos_x--;
+            target_ball.pos_y--;
         }
         case south_west:
         {
-            target_ball->pos_x ++ ;
-            target_ball->pos_y ++ ;
-            break;
+            screen[target_ball.pos_y][target_ball.pos_x] = ' ';
+            screen[target_ball.pos_y + 1][target_ball.pos_x - 1] = target_ball.c;
+            target_ball.pos_x++;
+            target_ball.pos_y++;
         }
         case south_east:
         {
-            target_ball->pos_x -- ;
-            target_ball->pos_y ++ ;
-            break;
+            screen[target_ball.pos_y][target_ball.pos_x] = ' ';
+            screen[target_ball.pos_y + 1][target_ball.pos_x + 1] = target_ball.c;
+            target_ball.pos_x--;
+            target_ball.pos_y++;
         }
     }
+    return target_ball;
 }
 
-void print_bricks()
+void print_bricks(char **screen)
 {
 	for(int i=0;(i<bricks_number) && (brick[i].visibility == true);i++)
 	{
@@ -105,9 +109,11 @@ void print_bricks()
 		}
 	}
 }
-
-bool print_screen (ball& target_ball)
+bool print_screen ()
 {
+    //defing the array
+    char screen[maxy][maxx];
+    
     for (int i = miny; i < maxy; i++)
     {
         if (i==(maxy-1) || i==miny)
@@ -130,18 +136,21 @@ bool print_screen (ball& target_ball)
      	screen[i][minx]='|';
     	screen[i][maxx-1]='|';
     }
-
-    //adding the slider
+    
     for(int j= slider.x;j<(silder_length+slider.x);j++)
     {
-    	screen[slider_y][j] = '=';    	
+    	screen[slider_y][j]='=';    	
 	}
-
-    //adding the ball(s)
-    screen[target_ball.pos_y][target_ball.pos_x] = target_ball.c;
-    
-    print_bricks();
-
+	//print_bricks(screen);
+	for(int i=0;(i<bricks_number) && (brick[i].visibility == true);i++)
+	{
+		for(int j=0;j<bricks_length;j++)
+		{
+			for(int k=0;k<bricks_width;k++)
+				screen[brick[i].y+k][brick[i].x+j]='#';
+		}
+	}
+	
     //printing the array
     for (int i = miny; i < maxy; i++)
     {
@@ -156,6 +165,7 @@ bool print_screen (ball& target_ball)
     	
     return true;
 }
+
 int slider_move(void)
 {
 	if(kbhit())
@@ -174,7 +184,6 @@ int slider_move(void)
 		}
 	return 0;
 }
-
 void initialize(void)
 {
 	brick[0].x=bricks_culomn1;
@@ -198,22 +207,17 @@ void initialize(void)
 	brick[8].x=bricks_culomn3;
 	brick[8].y=bricks_row3;
 }
-
 int main()
 {
-    initialize();
-
-    //adding a ball
-    ball ball_no_1;
-
+	initialize();
 	while(1)
 	{
-
-		print_screen(ball_no_1);
+		
+		print_screen();
 		slider_move();
-        move_ball(&ball_no_1);
         usleep(100000);
         system("cls");
+        	
 	}
     return 0;
 }
