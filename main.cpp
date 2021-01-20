@@ -13,6 +13,7 @@
 #define silder_length	10
 #define slider_start_x	20
 #define slider_y		28
+#define slider_speed 3
 
 #define ball_start_x 14
 #define ball_start_y 27
@@ -276,11 +277,11 @@ int slider_move(void)
 		{
 			case 'a':
 			case 'A':
-				slider.x--;
+				slider.x -= slider_speed;
 				break;
 			case 'd':
 			case 'D':
-				slider.x++;
+				slider.x += slider_speed;
 				break;
 			default:
 				return 0;
