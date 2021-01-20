@@ -33,6 +33,9 @@
 #define bricks_culomn3	30
 
 #define ball_number		1
+
+#define x_changes		2
+#define y_changes		1
 using namespace std;
 
 //defing the array
@@ -62,6 +65,7 @@ struct ball
     int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
     int pos_y = ball_start_y; 
     char c = 'O';
+    int lose =0;
 }target_ball[ball_number];
 
 //move_ball moves the ball according to it's heading
@@ -72,29 +76,25 @@ void move_ball(void)
 		switch (target_ball[i].heading)
    		{
 	        case north_east: 
-    	    {
-        	    target_ball[i].pos_x ++ ;
-	           	target_ball[i].pos_y -- ;
+        	    target_ball[i].pos_x +=x_changes ;
+	           	target_ball[i].pos_y -=y_changes ;
     	        break;
-        	}
+        	
 	        case north_west:
-    	    {
-        	    target_ball[i].pos_x -- ;
-	            target_ball[i].pos_y -- ;
+        	    target_ball[i].pos_x -=x_changes ;
+	            target_ball[i].pos_y -=y_changes ;
     	        break;
-        	}
+        	
  	       case south_west:
- 	        {
-  	          target_ball[i].pos_x ++ ;
-  	          target_ball[i].pos_y ++ ;
-         	   break;
-       		}
-	        case south_east:
- 	        {
-  	          	target_ball[i].pos_x -- ;
-           		target_ball[i].pos_y ++ ;
+  	            target_ball[i].pos_x -=x_changes ;
+  	            target_ball[i].pos_y +=y_changes ;
          	    break;
-      		}
+       		
+	        case south_east:
+  	          	target_ball[i].pos_x +=x_changes ;
+           		target_ball[i].pos_y +=y_changes ;
+         	    break;
+      		
    		}
 	}
     
@@ -111,7 +111,31 @@ void print_bricks()
 		}
 	}
 }
-
+bool border_collision(void)
+{
+	for(int i=0;i<ball_number;i++)
+	{	
+		//barkhord ba divar rast	
+		if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '|')
+			target_ball[i].heading=north_west;
+		else if(target_ball[i].heading==south_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '|')
+			target_ball[i].heading=south_west;
+		//barkhord ba divar bala
+		else if(target_ball[i].heading==north_west && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x-x_changes] == '_')
+			target_ball[i].heading=south_west;
+		else if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '_')
+			target_ball[i].heading=south_east;
+		//barkhord ba divar chap
+		else if(target_ball[i].heading==south_west && screen[target_ball[i].pos_y/*+y_changes*/][target_ball[i].pos_x/*-x_changes*/] == '|')
+			target_ball[i].heading=south_east;
+		else if(target_ball[i].heading==north_west && screen[target_ball[i].pos_y/*-y_changes*/][target_ball[i].pos_x/*-x_changes*/] == '|')
+			target_ball[i].heading=north_east;
+		else if(target_ball[i].pos_y == maxy)
+			target_ball[i].lose++;
+			
+	}
+	return true;	
+}
 bool print_screen (void)
 {
     for (int i = miny; i < maxy; i++)
@@ -213,10 +237,10 @@ int main()
 
 	while(1)
 	{
-
+		move_ball();
+        border_collision();
 		print_screen();
-		slider_move();
-        move_ball();
+		slider_move();        
         usleep(100000);
         system("cls");
 	}
