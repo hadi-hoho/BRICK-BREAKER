@@ -131,7 +131,13 @@ bool border_collision(void)
 		else if(target_ball[i].heading==north_west && screen[target_ball[i].pos_y/*-y_changes*/][target_ball[i].pos_x/*-x_changes*/] == '|')
 			target_ball[i].heading=north_east;
 		else if(target_ball[i].pos_y == maxy)
+		{
 			target_ball[i].lose++;
+			target_ball[i].pos_x = ball_start_x;
+			target_ball[i].pos_y = ball_start_y;
+			target_ball[i].heading = north_east;
+		}
+			
 			
 	}
 	return true;	
