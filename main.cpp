@@ -1,4 +1,4 @@
-// Created on A.R.M1111
+
 
 #include <iostream>
 //conio.h for getch and detection of pressing any key
@@ -31,6 +31,8 @@
 #define bricks_culomn2	20
 #define bricks_row3		15
 #define bricks_culomn3	30
+
+#define ball_number		1
 using namespace std;
 
 //defing the array
@@ -59,39 +61,43 @@ struct ball
     bool visible = true;
     int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
     int pos_y = ball_start_y; 
-    char c = 'o';
-};
+    char c = 'O';
+}target_ball[ball_number];
 
 //move_ball moves the ball according to it's heading
-void move_ball(ball *target_ball)
+void move_ball(void)
 {
-    switch (target_ball->heading)
-    {
-        case north_east: 
-        {
-            target_ball->pos_x ++ ;
-            target_ball->pos_y -- ;
-            break;
-        }
-        case north_west:
-        {
-            target_ball->pos_x -- ;
-            target_ball->pos_y -- ;
-            break;
-        }
-        case south_west:
-        {
-            target_ball->pos_x ++ ;
-            target_ball->pos_y ++ ;
-            break;
-        }
-        case south_east:
-        {
-            target_ball->pos_x -- ;
-            target_ball->pos_y ++ ;
-            break;
-        }
-    }
+	for(int i=0;i<ball_number;i++)
+	{
+		switch (target_ball[i].heading)
+   		{
+	        case north_east: 
+    	    {
+        	    target_ball[i].pos_x ++ ;
+	           	target_ball[i].pos_y -- ;
+    	        break;
+        	}
+	        case north_west:
+    	    {
+        	    target_ball[i].pos_x -- ;
+	            target_ball[i].pos_y -- ;
+    	        break;
+        	}
+ 	       case south_west:
+ 	        {
+  	          target_ball[i].pos_x ++ ;
+  	          target_ball[i].pos_y ++ ;
+         	   break;
+       		}
+	        case south_east:
+ 	        {
+  	          	target_ball[i].pos_x -- ;
+           		target_ball[i].pos_y ++ ;
+         	    break;
+      		}
+   		}
+	}
+    
 }
 
 void print_bricks()
@@ -106,7 +112,7 @@ void print_bricks()
 	}
 }
 
-bool print_screen (ball& target_ball)
+bool print_screen (void)
 {
     for (int i = miny; i < maxy; i++)
     {
@@ -138,7 +144,7 @@ bool print_screen (ball& target_ball)
 	}
 
     //adding the ball(s)
-    screen[target_ball.pos_y][target_ball.pos_x] = target_ball.c;
+    screen[target_ball[0].pos_y][target_ball[0].pos_x] = target_ball[0].c;
     
     print_bricks();
 
@@ -204,14 +210,13 @@ int main()
     initialize();
 
     //adding a ball
-    ball ball_no_1;
 
 	while(1)
 	{
 
-		print_screen(ball_no_1);
+		print_screen();
 		slider_move();
-        move_ball(&ball_no_1);
+        move_ball();
         usleep(100000);
         system("cls");
 	}
