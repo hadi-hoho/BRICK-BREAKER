@@ -1,5 +1,3 @@
-
-
 #include <iostream>
 //conio.h for getch and detection of pressing any key
 #include <conio.h>
@@ -124,14 +122,14 @@ bool border_collision(void)
 		else if(target_ball[i].heading==south_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '|')
 			target_ball[i].heading=south_west;
 		//barkhord ba divar bala
-		else if(target_ball[i].heading==north_west && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x-x_changes] == '_')
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_y<=miny/*screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x-x_changes] == '_'*/)
 			target_ball[i].heading=south_west;
 		else if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '_')
 			target_ball[i].heading=south_east;
 		//barkhord ba divar chap
 		else if(target_ball[i].heading==south_west && screen[target_ball[i].pos_y/*+y_changes*/][target_ball[i].pos_x/*-x_changes*/] == '|')
 			target_ball[i].heading=south_east;
-		else if(target_ball[i].heading==north_west && screen[target_ball[i].pos_y/*-y_changes*/][target_ball[i].pos_x/*-x_changes*/] == '|')
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_x<=minx/*screen[target_ball[i].pos_y/*-y_changes][target_ball[i].pos_x/*-x_changes] == '|'*/)
 			target_ball[i].heading=north_east;
 		else if(target_ball[i].pos_y == maxy)
 		{
@@ -149,7 +147,7 @@ void brick_collision(void)
 {
 	for(int i=0;i<ball_number;i++)
 	{
-		if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '#')
+		/*if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '#')
 		{
 			if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
 				target_ball[i].heading=north_west;
@@ -176,7 +174,23 @@ void brick_collision(void)
 				target_ball[i].heading=south_east;
 			else
 				target_ball[i].heading=north_west;
-		}	
+		}*/
+		if(screen[target_ball[i].pos_y][target_ball[i].pos_x] == '#')
+		{
+			if(target_ball[i].heading == north_east)
+				target_ball[i].heading=south_east;
+				
+			else if(target_ball[i].heading == north_west)
+				target_ball[i].heading=south_west;
+				
+			else if(target_ball[i].heading == south_east)
+				target_ball[i].heading=north_east;
+				
+			else if(target_ball[i].heading == south_west)
+				target_ball[i].heading=north_west;
+		}
+			
+			
 	}
 }
 bool slider_collision(void)
@@ -206,10 +220,10 @@ bool brick_del (void)
 		{
 			if (brick[i].visibility)
 			{
-				if (brick[i].x <= target_ball[j].pos_x && brick[i].x + bricks_length >= target_ball[j].pos_x )
+				if (brick[i].x <= target_ball[j].pos_x && brick[i].x + 2 >= target_ball[j].pos_x )
 				{
 					
-					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
+					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + 1 >= target_ball[j].pos_y)
 					{
 						brick[i].visibility = false;
 					}
