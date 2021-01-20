@@ -116,7 +116,7 @@ bool border_collision(void)
 	for(int i=0;i<ball_number;i++)
 	{	
 		//barkhord ba divar rast	
-		if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '|')
+		if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '|')
 			target_ball[i].heading=north_west;
 		else if(target_ball[i].heading==south_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '|')
 			target_ball[i].heading=south_west;
@@ -141,6 +141,40 @@ bool border_collision(void)
 			
 	}
 	return true;	
+}
+void brick_collision(void)
+{
+	for(int i=0;i<ball_number;i++)
+	{
+		if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '#')
+		{
+			if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
+				target_ball[i].heading=north_west;
+			else
+				target_ball[i].heading=south_east;
+		}
+		else if(target_ball[i].heading==north_west && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x-x_changes] == '#')
+		{
+			if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
+				target_ball[i].heading=north_east;
+			else
+				target_ball[i].heading=south_west;
+		}
+		else if(target_ball[i].heading==south_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '#')
+		{
+			if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
+				target_ball[i].heading=north_west;
+			else
+				target_ball[i].heading=north_east;
+		}
+		else if(target_ball[i].heading==south_west && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x-x_changes] == '#')
+		{
+			if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
+				target_ball[i].heading=south_east;
+			else
+				target_ball[i].heading=north_west;
+		}	
+	}
 }
 bool slider_collision(void)
 {
@@ -264,6 +298,7 @@ int main()
 	{
 		move_ball();
         border_collision();
+        brick_collision();
 		slider_collision();
 		print_screen();
 		slider_move();        
