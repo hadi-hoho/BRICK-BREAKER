@@ -97,17 +97,19 @@ void move_ball(void)
       		
    		}
 	}
-    
 }
 
 void print_bricks()
 {
-	for(int i=0;(i<bricks_number) && (brick[i].visibility == true);i++)
+	for(int i=0;i<bricks_number;i++)
 	{
-		for(int j=0;j<bricks_length;j++)
+		if (brick[i].visibility)
 		{
-			for(int k=0;k<bricks_width;k++)
-				screen[brick[i].y+k][brick[i].x+j]='#';
+			for(int j=0;j<bricks_length;j++)
+			{
+				for(int k=0;k<bricks_width;k++)
+					screen[brick[i].y+k][brick[i].x+j]='#';
+			}
 		}
 	}
 }
@@ -189,6 +191,28 @@ bool slider_collision(void)
 			if (target_ball[i].heading == south_west)
 			{
 				target_ball[i].heading = north_west;
+			}
+		}
+	}
+	return true;
+}
+
+bool brick_del (void)
+{
+	for (int i = 0; i < bricks_number; i++)
+	{
+		for (int j = 0; j < ball_number; j++)
+		{
+			if (brick[i].visibility)
+			{
+				if (brick[i].x <= target_ball[j].pos_x && brick[i].x + bricks_length >= target_ball[j].pos_x )
+				{
+					
+					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
+					{
+						brick[i].visibility = false;
+					}
+				}
 			}
 		}
 	}
@@ -300,6 +324,7 @@ int main()
         border_collision();
         brick_collision();
 		slider_collision();
+		brick_del();
 		print_screen();
 		slider_move();        
         usleep(100000);
