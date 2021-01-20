@@ -142,6 +142,25 @@ bool border_collision(void)
 	}
 	return true;	
 }
+bool slider_collision(void)
+{
+	for (int i = 0; i < ball_number; i++)
+	{
+		if (target_ball[i].pos_y==slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
+		{
+			if (target_ball[i].heading == south_east )
+			{
+				target_ball[i].heading = north_east;
+			}
+			if (target_ball[i].heading == south_west)
+			{
+				target_ball[i].heading = north_west;
+			}
+		}
+	}
+	return true;
+}
+
 bool print_screen (void)
 {
     for (int i = miny; i < maxy; i++)
@@ -245,6 +264,7 @@ int main()
 	{
 		move_ball();
         border_collision();
+		slider_collision();
 		print_screen();
 		slider_move();        
         usleep(100000);
