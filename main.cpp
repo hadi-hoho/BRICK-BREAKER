@@ -376,18 +376,12 @@ welcome_page(void)
     cout<<"Alireza Mikaeili";
         
 }
-void showClk(void) 
-{
-   system("cls");
-   welcome_page();
-   	
-}
 void systemCallTimer(void) 
 {
    int sec = 0;
    while (true)
    {
-    	showClk();
+   welcome_page();
       	sleep(10);
     	sec++;
    		if(sec==1)
