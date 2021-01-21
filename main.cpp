@@ -2,6 +2,7 @@
 //conio.h for getch and detection of pressing any key
 #include <conio.h>
 #include <unistd.h>
+#include <windows.h>  //for defining gotoxy
 
 #define maxx	40
 #define maxy	30
@@ -326,9 +327,76 @@ void initialize(void)
 	brick[8].x=bricks_culomn3;
 	brick[8].y=bricks_row3;
 }
+void gotoxy(int xpos, int ypos)
+{
+	COORD scrn;
+	HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
+	scrn.X = xpos; scrn.Y = ypos;
+	SetConsoleCursorPosition(hOuput,scrn);
+}
+welcome_page(void)
+{
+    for (int i = miny; i < maxy; i++)
+    {
+        if (i==(maxy-1) || i==miny)
+        {
+            for (int j = minx; j < maxx; j++)
+            {
+                screen[i][j]= '_';
+            }
+        }
+    }
+    for (int i=miny;i<maxy;i++)
+    {
+     	screen[i][minx]='|';
+    	screen[i][maxx-1]='|';
+    }
+     for (int i = miny; i < maxy; i++)
+    {
+    	
+        for (int j = minx; j < maxx; j++)
+        {
+            cout<<screen[i][j];
+        }
+        cout<<'\n';
+    }
+    gotoxy(8,8);
+        cout<<"Welcome to BRICK BREAKER";
+    gotoxy(4,10);
+        cout<<"For moving right press 'D' button";
+    gotoxy(4,11);
+        cout<<"For moving left press 'A' button";
+    gotoxy(15,16);
+    cout<<"Producers:";
+    gotoxy(14,17);
+    cout<<"Hadi Firoozi";
+    gotoxy(14,18);
+    cout<<"Sanaz Motie";
+    gotoxy(12,19);
+    cout<<"Alireza Mikaeili";
+        
+}
+void showClk() {
+   system("cls");
+   cout<<welcome_page();
+   	
+}
+void systemCallTimer() {
+   int sec = 0;
+   while (true) {
+      showClk();
+      sleep(10);
+      sec++;
+   		if(sec==1)
+   	{
+   		break;
+   		}
+   }
+}
 
 int main()
 {
+    systemCallTimer();
     initialize();
 
     //adding a ball
