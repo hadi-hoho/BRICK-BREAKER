@@ -1,7 +1,7 @@
 #include <iostream>
 //conio.h for getch and detection of pressing any key
 #include <conio.h>
-#include <unistd.h>
+#include <unistd.h>   //for defining sleep
 #include <windows.h>  //for defining gotoxy
 
 #define maxx	40
@@ -254,7 +254,7 @@ bool print_screen (void)
             }
         }
     }
-    for (int i=miny;i<maxy;i++)
+    for (int i=miny+1;i<maxy;i++)
     {
      	screen[i][minx]='|';
     	screen[i][maxx-1]='|';
@@ -349,7 +349,7 @@ void welcome_page(void)
             }
         }
     }
-    for (int i=miny;i<maxy;i++)
+    for (int i=miny+1;i<maxy;i++)
     {
      	screen[i][minx]='|';
     	screen[i][maxx-1]='|';
