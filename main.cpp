@@ -385,18 +385,31 @@ int main()
     initialize();
 
     //adding a ball
-
+char ch;
 	while(1)
 	{
+		print_screen();
+		gotoxy(10,20);
+		cout<<"Press Space to start";
+		if (kbhit)
+		{
+			ch = getch();
+			if (int(ch) == 32)
+			while(1)
+			{
+		system("cls");
+		print_screen();	
 		move_ball();
         border_collision();
         brick_collision();
 		slider_collision();
 		brick_del();
-		print_screen();
 		slider_move();        
         usleep(100000);
-        system("cls");
+			}
+			else
+			system("cls");
+		}
 	}
     return 0;
 }
