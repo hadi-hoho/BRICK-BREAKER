@@ -10,11 +10,11 @@
 #define miny	0
 
 #define silder_length	10
-#define slider_start_x	20
+#define slider_start_x	15
 #define slider_y		28
 #define slider_speed 3
 
-#define ball_start_x 14
+#define ball_start_x 20
 #define ball_start_y 27
 
 #define north_east 1
@@ -282,16 +282,20 @@ bool print_screen (void)
     return true;
 }
 int slider_move(void)
-{
+{	
 	if(kbhit())
 		switch(getch())
 		{
 			case 'a':
 			case 'A':
+				if((slider.x-slider_speed)<minx )
+					return 0;
 				slider.x -= slider_speed;
 				break;
 			case 'd':
 			case 'D':
+				if((slider.x+silder_length+slider_speed)>maxx)
+					return 0;
 				slider.x += slider_speed;
 				break;
 			default:
@@ -299,7 +303,6 @@ int slider_move(void)
 		}
 	return 0;
 }
-
 void initialize(void)
 {
 	brick[0].x=bricks_culomn1;
