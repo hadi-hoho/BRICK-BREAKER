@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <unistd.h>   //for defining sleep
 #include <windows.h>  //for defining gotoxy
+#include <stdlib.h>  //for exiting when losing
 
 #define maxx	40
 #define maxy	30
@@ -65,7 +66,6 @@ struct ball
     int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
     int pos_y = ball_start_y; 
     char c = 'O';
-    int lose =0;
 }target_ball[ball_number];
 
 //move_ball moves the ball according to it's heading
@@ -134,7 +134,6 @@ bool border_collision(void)
 			target_ball[i].heading=north_east;
 		else if(target_ball[i].pos_y == maxy)
 		{
-			target_ball[i].lose++;
 			target_ball[i].pos_x = ball_start_x;
 			target_ball[i].pos_y = ball_start_y;
 			target_ball[i].heading = north_east;
@@ -378,7 +377,21 @@ void welcome_page(void)
    	break;
    }
 }
-
+void losing(int &lose)   //call by reference
+{
+	cout<<"You lost!"<<'\t';
+	sleep(2);
+	if(lose<3) {
+	cout<<"Remain chances="<<3-lose;
+	lose++;
+	sleep(3);
+	}
+	else {
+	cout<<"You can try again later";
+	sleep(3);
+	exit(0);
+	}
+}
 int main()
 {
     welcome_page();
@@ -386,6 +399,7 @@ int main()
 
     //adding a ball
 char ch;
+int lose =1;
 	while(1)
 	{
 		print_screen();
@@ -406,6 +420,9 @@ char ch;
 		brick_del();
 		slider_move();        
         usleep(100000);
+		for(int i=0;i<ball_number;i++)
+		if(target_ball[i].pos_y==maxy-1) 
+		losing(lose);
 			}
 			else
 			system("cls");
