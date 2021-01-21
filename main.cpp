@@ -10,11 +10,11 @@
 #define miny	0
 
 #define silder_length	10
-#define slider_start_x	20
+#define slider_start_x	16
 #define slider_y		28
 #define slider_speed 3
 
-#define ball_start_x 14
+#define ball_start_x 20
 #define ball_start_y 27
 
 #define north_east 1
