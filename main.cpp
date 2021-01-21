@@ -378,16 +378,11 @@ welcome_page(void)
 }
 void systemCallTimer(void) 
 {
-   int sec = 0;
    while (true)
    {
    welcome_page();
       	sleep(10);
-    	sec++;
-   		if(sec==1)
-   		{
-   			break;
-   		}
+   	break;
    }
 }
 
