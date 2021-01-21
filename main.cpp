@@ -257,7 +257,7 @@ bool print_screen (void)
     for (int i=miny;i<maxy;i++)
     {
      	screen[i][minx]='|';
-    	screen[i][maxx]='|';
+    	screen[i][maxx-1]='|';
     }
 
     //adding the slider
