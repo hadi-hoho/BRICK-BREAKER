@@ -334,9 +334,12 @@ void gotoxy(int xpos, int ypos)
 	scrn.X = xpos; scrn.Y = ypos;
 	SetConsoleCursorPosition(hOuput,scrn);
 }
-welcome_page(void)
+
+void welcome_page(void) 
 {
-    for (int i = miny; i < maxy; i++)
+   while (true)
+   {
+   for (int i = miny; i < maxy; i++)
     {
         if (i==(maxy-1) || i==miny)
         {
@@ -374,21 +377,15 @@ welcome_page(void)
     cout<<"Sanaz Motie";
     gotoxy(12,19);
     cout<<"Alireza Mikaeili";
-        
-}
-void systemCallTimer(void) 
-{
-   while (true)
-   {
-   welcome_page();
       	sleep(10);
+	system("cls");
    	break;
    }
 }
 
 int main()
 {
-    systemCallTimer();
+    welcome_page();
     initialize();
 
     //adding a ball
