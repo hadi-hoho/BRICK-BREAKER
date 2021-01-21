@@ -372,7 +372,12 @@ void welcome_page(void)
     cout<<"Sanaz Motie";
     gotoxy(12,19);
     cout<<"Alireza Mikaeili";
-      	sleep(10);
+      sleep(7);
+	for (int i=3; i>0; i--){
+	gotoxy(20,21);
+    cout<<i;
+      	sleep(1);
+	}
 	system("cls");
    	break;
    }
