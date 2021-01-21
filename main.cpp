@@ -145,54 +145,50 @@ bool border_collision(void)
 	return true;	
 }
 void brick_collision(void)
-{
-	for(int i=0;i<ball_number;i++)
-	{
-		/*if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '#')
+{	
+		for (int i = 0; i < ball_number; i++)
 		{
-			if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
-				target_ball[i].heading=north_west;
-			else
-				target_ball[i].heading=south_east;
-		}
-		else if(target_ball[i].heading==north_west && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x-x_changes] == '#')
-		{
-			if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
-				target_ball[i].heading=north_east;
-			else
-				target_ball[i].heading=south_west;
-		}
-		else if(target_ball[i].heading==south_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '#')
-		{
-			if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
-				target_ball[i].heading=north_west;
-			else
-				target_ball[i].heading=north_east;
-		}
-		else if(target_ball[i].heading==south_west && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x-x_changes] == '#')
-		{
-			if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
-				target_ball[i].heading=south_east;
-			else
-				target_ball[i].heading=north_west;
-		}*/
-		if(screen[target_ball[i].pos_y][target_ball[i].pos_x] == '#')
-		{
-			if(target_ball[i].heading == north_east)
-				target_ball[i].heading=south_east;
-				
-			else if(target_ball[i].heading == north_west)
-				target_ball[i].heading=south_west;
-				
-			else if(target_ball[i].heading == south_east)
-				target_ball[i].heading=north_east;
-				
-			else if(target_ball[i].heading == south_west)
-				target_ball[i].heading=north_west;
-		}
-			
-			
-	}
+			for (int j = 0; j < bricks_number; j++)
+			{
+				if (brick[j].visibility)
+				{
+					if (brick[j].x <= target_ball[i].pos_x && brick[j].x + 2 >= target_ball[i].pos_x )
+					{	
+						if (brick[j].y <= target_ball[i].pos_y &&  brick[j].y + 1 >= target_ball[i].pos_y)
+						{
+							switch (target_ball[i].heading)
+							{
+								case north_east:
+									if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
+										target_ball[i].heading=north_west;
+									else
+										target_ball[i].heading=south_east;								
+									break;
+								case north_west:
+									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
+										target_ball[i].heading=north_east;
+									else
+										target_ball[i].heading=south_west;									
+									break;
+								case south_east:
+									if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
+										target_ball[i].heading=north_west;
+									else
+										target_ball[i].heading=north_east;
+									break;
+								case south_west:
+									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
+										target_ball[i].heading=south_east;
+									else
+										target_ball[i].heading=north_west;
+									break;
+								
+							}
+						}
+					}
+				}
+			}	
+		}	
 }
 bool slider_collision(void)
 {
