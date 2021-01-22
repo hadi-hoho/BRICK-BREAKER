@@ -35,8 +35,8 @@
 
 #define ball_number		1
 
-#define x_changes		2
-#define y_changes		1
+int x_changes	=	2;
+int y_changes	=	1;
 using namespace std;
 
 //defing the array
@@ -113,36 +113,41 @@ void print_bricks()
 		}
 	}
 }
+
 bool border_collision(void)
 {
 	for(int i=0;i<ball_number;i++)
 	{	
 		//barkhord ba divar rast	
-		if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '|')
+		if(target_ball[i].heading==north_east && target_ball[i].pos_x >= maxx)
 			target_ball[i].heading=north_west;
-		else if(target_ball[i].heading==south_east && screen[target_ball[i].pos_y+y_changes][target_ball[i].pos_x+x_changes] == '|')
+		else if(target_ball[i].heading==south_east && target_ball[i].pos_x >= maxx)
 			target_ball[i].heading=south_west;
+
 		//barkhord ba divar bala
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_y<=miny/*screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x-x_changes] == '_'*/)
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_y<=miny)
 			target_ball[i].heading=south_west;
-		else if(target_ball[i].heading==north_east && screen[target_ball[i].pos_y-y_changes][target_ball[i].pos_x+x_changes] == '_')
+		else if(target_ball[i].heading==north_east && target_ball[i].pos_y<=miny)
 			target_ball[i].heading=south_east;
+
 		//barkhord ba divar chap
-		else if(target_ball[i].heading==south_west && screen[target_ball[i].pos_y/*+y_changes*/][target_ball[i].pos_x/*-x_changes*/] == '|')
+		else if(target_ball[i].heading==south_west && target_ball[i].pos_x <= minx )
 			target_ball[i].heading=south_east;
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_x<=minx/*screen[target_ball[i].pos_y/*-y_changes][target_ball[i].pos_x/*-x_changes] == '|'*/)
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_x <= minx )
 			target_ball[i].heading=north_east;
-		else if(target_ball[i].pos_y == maxy)
+		
+		//barkhord be payin
+		else if(target_ball[i].pos_y >= maxy)
 		{
+			//reset the ball !
 			target_ball[i].pos_x = ball_start_x;
 			target_ball[i].pos_y = ball_start_y;
 			target_ball[i].heading = north_east;
 		}
-			
-			
 	}
 	return true;	
 }
+
 void brick_collision(void)
 {	
 		for (int i = 0; i < ball_number; i++)
@@ -151,9 +156,9 @@ void brick_collision(void)
 			{
 				if (brick[j].visibility)
 				{
-					if (brick[j].x <= target_ball[i].pos_x && brick[j].x + 2 >= target_ball[i].pos_x )
+					if (brick[j].x <= target_ball[i].pos_x && brick[j].x + bricks_length >= target_ball[i].pos_x )
 					{	
-						if (brick[j].y <= target_ball[i].pos_y &&  brick[j].y + 1 >= target_ball[i].pos_y)
+						if (brick[j].y <= target_ball[i].pos_y &&  brick[j].y + bricks_width >= target_ball[i].pos_y)
 						{
 							switch (target_ball[i].heading)
 							{
@@ -193,7 +198,7 @@ bool slider_collision(void)
 {
 	for (int i = 0; i < ball_number; i++)
 	{
-		if (target_ball[i].pos_y==slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
+		if (target_ball[i].pos_y >=slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
 		{
 			if (target_ball[i].heading == south_east )
 			{
@@ -216,10 +221,10 @@ bool brick_del (void)
 		{
 			if (brick[i].visibility)
 			{
-				if (brick[i].x <= target_ball[j].pos_x && brick[i].x + 2 >= target_ball[j].pos_x )
+				if (brick[i].x <= target_ball[j].pos_x && brick[i].x + bricks_length >= target_ball[j].pos_x )
 				{
 					
-					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + 1 >= target_ball[j].pos_y)
+					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
 					{
 						brick[i].visibility = false;
 					}
@@ -280,6 +285,28 @@ bool print_screen (void)
     	
     return true;
 }
+
+void check_left_chafe()
+{
+	for (int  i = 0; i < ball_number; i++)
+	{
+		if (target_ball[i].pos_y==slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
+		{
+			x_changes+=1;
+		}	
+	}
+}
+void check_right_chafe()
+{
+	for (int  i = 0; i < ball_number; i++)
+	{
+		if (target_ball[i].pos_y==slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
+		{
+			x_changes+=1;
+		}	
+	}
+}
+
 int slider_move(void)
 {
 	if(kbhit())
@@ -290,12 +317,14 @@ int slider_move(void)
 				if((slider.x-slider_speed)<minx )
 					return 0;
 				slider.x -= slider_speed;
+				check_left_chafe();
 				break;
 			case 'd':
 			case 'D':
 				if((slider.x+silder_length+slider_speed)>maxx)
 					return 0;
 				slider.x += slider_speed;
+				check_right_chafe();
 				break;
 			default:
 				return 0;
