@@ -32,6 +32,7 @@
 #define bricks_culomn2	20
 #define bricks_row3		15
 #define bricks_culomn3	30
+int bricks = 9;
 
 #define ball_number		1
 
@@ -239,7 +240,8 @@ bool brick_del (void)
 					
 					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
 					{
-						brick[i].del = true;					
+						brick[i].del = true;
+						bricks--;
 					}
 				}
 			}
@@ -406,17 +408,17 @@ void welcome_page(void)
         cout<<'\n';
     }
     gotoxy(8,8);
-        cout<<"Welcome to BRICK BREAKER";
-    gotoxy(4,10);
-        cout<<"For moving right press 'D' button";
-    gotoxy(4,11);
-        cout<<"For moving left press 'A' button";
+    cout<<"Welcome to BRICK BREAKER";
+	sleep(1);
     gotoxy(15,16);
     cout<<"Producers:";
+	sleep(1);
     gotoxy(14,17);
     cout<<"Hadi Firoozi";
+	sleep(1);
     gotoxy(14,18);
     cout<<"Sanaz Motie";
+	sleep(1);
     gotoxy(12,19);
     cout<<"Alireza Mikaeili";
       sleep(7);
@@ -438,7 +440,12 @@ int start(void)
 	target_ball[0].heading=north_east;
 	system("cls");
 	print_screen();
-	gotoxy(10,20);
+	gotoxy(4,18);
+        cout<<"For moving right press 'D' button";
+    gotoxy(4,20);
+        cout<<"For moving left press 'A' button";
+	gotoxy(10,22);
+	sleep(2);
 	cout<<"Press Space to start";
 	while(1)
 	{
@@ -470,7 +477,53 @@ void losing(int &lose)   //call by reference
 		exit(0);
 	}
 }
-
+void winning()
+{
+	sleep(1);
+	system("cls");
+	for (int i = miny; i < maxy; i++)
+    {
+        if (i==(maxy-1) || i==miny)
+        {
+            for (int j = minx; j < maxx; j++)
+            {
+                screen[i][j]= '_';
+            }
+        }
+        else
+		{
+            for (int j = minx; j < maxx; j++)
+            {
+                screen[i][j]= ' ';
+            }
+        }
+    }
+    for (int i=miny+1;i<maxy;i++)
+    {
+     	screen[i][minx]='|';
+    	screen[i][maxx-1]='|';
+    }
+	for (int i = miny; i < maxy; i++)
+    {
+    	
+        for (int j = minx; j < maxx; j++)
+        {
+            cout<<screen[i][j];
+        }
+        cout<<'\n';
+    }
+	gotoxy(13,8);
+        cout<<"BRICK BREAKER";
+		sleep(2);
+	gotoxy(12,12);
+        cout<<"Congratulations";
+	sleep(1);
+	 gotoxy(15,14);
+        cout<<"You won!";
+		sleep(5);
+		gotoxy(2,31);
+		exit (0);	
+}
 int main()
 {
     welcome_page();
@@ -490,6 +543,8 @@ int main()
 		brick_del();
 		slider_move();        
         usleep(100000);
+		if(bricks==0)
+			winning();
 		for(int i=0;i<ball_number;i++)
 			if(target_ball[i].pos_y==maxy-1) 
 				losing(lose);			
