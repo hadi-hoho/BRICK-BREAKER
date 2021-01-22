@@ -119,25 +119,25 @@ bool border_collision(void)
 	for(int i=0;i<ball_number;i++)
 	{	
 		//barkhord ba divar rast	
-		if(target_ball[i].heading==north_east && target_ball[i].pos_x >= maxx)
+		if(target_ball[i].heading==north_east && target_ball[i].pos_x +x_changes>= maxx)
 			target_ball[i].heading=north_west;
-		else if(target_ball[i].heading==south_east && target_ball[i].pos_x >= maxx)
+		else if(target_ball[i].heading==south_east && target_ball[i].pos_x +x_changes>= maxx)
 			target_ball[i].heading=south_west;
 
 		//barkhord ba divar bala
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_y<=miny)
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_y-y_changes<=miny)
 			target_ball[i].heading=south_west;
-		else if(target_ball[i].heading==north_east && target_ball[i].pos_y<=miny)
+		else if(target_ball[i].heading==north_east && target_ball[i].pos_y-y_changes<=miny)
 			target_ball[i].heading=south_east;
 
 		//barkhord ba divar chap
-		else if(target_ball[i].heading==south_west && target_ball[i].pos_x <= minx )
+		else if(target_ball[i].heading==south_west && target_ball[i].pos_x -x_changes<= minx )
 			target_ball[i].heading=south_east;
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_x <= minx )
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_x -x_changes<= minx )
 			target_ball[i].heading=north_east;
 		
 		//barkhord be payin
-		else if(target_ball[i].pos_y >= maxy)
+		else if(target_ball[i].pos_y +y_changes>= maxy)
 		{
 			//reset the ball !
 			target_ball[i].pos_x = ball_start_x;
@@ -237,6 +237,7 @@ bool brick_del (void)
 
 bool print_screen (void)
 {
+	system("cls");
     for (int i = miny; i < maxy; i++)
     {
         if (i==(maxy-1) || i==miny)
@@ -468,7 +469,6 @@ int main()
 	start();
 	while(1)
 	{		
-		system("cls");
 		print_screen();	
 		move_ball();
         border_collision();
