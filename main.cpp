@@ -56,6 +56,7 @@ struct bricks
 	int x;
 	int y;
 	bool visibility=true;
+	bool del=false; 
 }brick[bricks_number];
 
 //struct of ball
@@ -66,6 +67,7 @@ struct ball
     int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
     int pos_y = ball_start_y; 
     char c = 'O';
+    
 }target_ball[ball_number];
 
 //move_ball moves the ball according to it's heading
@@ -215,6 +217,17 @@ bool slider_collision(void)
 
 bool brick_del (void)
 {
+	static int cnt=0;
+	for (int i = 0; i < bricks_number; i++)
+		if(brick[i].del == true)
+		{			
+			if(cnt==1)
+			{
+				brick[i].visibility = false;
+				cnt=0;	
+			}
+			cnt++;			
+		}
 	for (int i = 0; i < bricks_number; i++)
 	{
 		for (int j = 0; j < ball_number; j++)
@@ -226,7 +239,7 @@ bool brick_del (void)
 					
 					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
 					{
-						brick[i].visibility = false;
+						brick[i].del = true;					
 					}
 				}
 			}
