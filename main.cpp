@@ -164,7 +164,7 @@ void brick_collision(void)
 										target_ball[i].heading=south_east;								
 									break;
 								case north_west:
-									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
+									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn3+(bricks_length-1)))
 										target_ball[i].heading=north_east;
 									else
 										target_ball[i].heading=south_west;									
@@ -176,7 +176,7 @@ void brick_collision(void)
 										target_ball[i].heading=north_east;
 									break;
 								case south_west:
-									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)))
+									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn3+(bricks_length-1)))
 										target_ball[i].heading=south_east;
 									else
 										target_ball[i].heading=north_west;
@@ -287,10 +287,14 @@ int slider_move(void)
 		{
 			case 'a':
 			case 'A':
+				if((slider.x-slider_speed)<minx )
+					return 0;
 				slider.x -= slider_speed;
 				break;
 			case 'd':
 			case 'D':
+				if((slider.x+silder_length+slider_speed)>maxx)
+					return 0;
 				slider.x += slider_speed;
 				break;
 			default:
@@ -382,40 +386,59 @@ void welcome_page(void)
    	break;
    }
 }
+int start(void)
+{
+	char ch;
+	slider.x=slider_start_x;
+	target_ball[0].pos_x=ball_start_x;
+	target_ball[0].pos_y=ball_start_y;
+	target_ball[0].heading=north_east;
+	system("cls");
+	print_screen();
+	gotoxy(10,20);
+	cout<<"Press Space to start";
+	while(1)
+	{
+		if (kbhit)
+		{
+			ch = getch();
+			if (int(ch) == 32)
+			return 0;
+		}
+		else
+			system("cls");		
+	}
+}
 void losing(int &lose)   //call by reference
 {
 	cout<<"You lost!"<<'\t';
 	sleep(2);
-	if(lose<3) {
-	cout<<"Remain chances="<<3-lose;
-	lose++;
-	sleep(3);
+	if(lose<3) 
+	{
+		cout<<"Remain chances="<<3-lose;
+		lose++;
+		sleep(3);
+		start();
 	}
-	else {
-	cout<<"You can try again later";
-	sleep(3);
-	exit(0);
+	else
+	{
+		cout<<"You can try again later";
+		sleep(3);
+		exit(0);
 	}
 }
+
 int main()
 {
     welcome_page();
     initialize();
 
     //adding a ball
-char ch;
-int lose =1;
+
+	int lose =1;
+	start();
 	while(1)
-	{
-		print_screen();
-		gotoxy(10,20);
-		cout<<"Press Space to start";
-		if (kbhit)
-		{
-			ch = getch();
-			if (int(ch) == 32)
-			while(1)
-			{
+	{		
 		system("cls");
 		print_screen();	
 		move_ball();
@@ -426,12 +449,8 @@ int lose =1;
 		slider_move();        
         usleep(100000);
 		for(int i=0;i<ball_number;i++)
-		if(target_ball[i].pos_y==maxy-1) 
-		losing(lose);
-			}
-			else
-			system("cls");
-		}
+			if(target_ball[i].pos_y==maxy-1) 
+				losing(lose);			
 	}
     return 0;
 }
