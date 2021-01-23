@@ -424,7 +424,7 @@ void welcome_page(void)
     cout<<"Alireza Mikaeili";
       sleep(5);
 	for (int i=3; i>0; i--){
-	gotoxy(20,21);
+	gotoxy(19,21);
     cout<<i;
       	sleep(1);
 	}
@@ -432,6 +432,7 @@ void welcome_page(void)
    	break;
    }
 }
+
 int start(void)
 {
 	char ch;
@@ -460,6 +461,20 @@ int start(void)
 			system("cls");		
 	}
 }
+
+void pause()
+{
+	if (kbhit())
+		{
+			char pause = getch();
+			if (int(pause) == 27)
+			{
+			cout<<"\n \tPress Enter to continue";
+			cin.get();
+			}
+		}
+}
+
 void losing(int &lose)   //call by reference
 {
 	cout<<"You lost!"<<'\t';
@@ -478,6 +493,7 @@ void losing(int &lose)   //call by reference
 		exit(0);
 	}
 }
+
 void winning()
 {
 	system("cls");
@@ -525,6 +541,7 @@ void winning()
 		gotoxy(2,31);
 		exit (0);	
 }
+
 int main()
 {
     welcome_page();
@@ -536,19 +553,20 @@ int main()
 	start();
 	while(1)
 	{		
-		print_screen();	
-		move_ball();
+	print_screen();
+	pause();
+	move_ball();
         border_collision();
         brick_collision();
-		slider_collision();
-		brick_del();
-		slider_move();        
+	slider_collision();
+	brick_del();
+	slider_move();        
         usleep(100000);
-		if(bricks==0)
-			winning();
-		for(int i=0;i<ball_number;i++)
-			if(target_ball[i].pos_y==maxy-1) 
-				losing(lose);			
+	if(bricks==0)
+		winning();
+	for(int i=0;i<ball_number;i++)
+		if(target_ball[i].pos_y==maxy-1) 
+			losing(lose);			
 	}
     return 0;
 }
