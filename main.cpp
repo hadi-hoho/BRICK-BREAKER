@@ -32,7 +32,7 @@
 #define bricks_culomn2	20
 #define bricks_row3		15
 #define bricks_culomn3	30
-int bricks = 9;
+int bricks = bricks_number;
 
 #define ball_number		1
 
@@ -297,6 +297,7 @@ bool print_screen (void)
         }
         cout<<'\n';
     }
+    cout<<endl<<endl<<target_ball[0].pos_x<<","<<target_ball[0].pos_y;
     
     	
     return true;
