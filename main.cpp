@@ -140,7 +140,7 @@ bool border_collision(void)
 			target_ball[i].heading=north_east;
 		
 		//barkhord be payin
-		else if(target_ball[i].pos_y +y_changes>= maxy)
+		else if(target_ball[i].pos_y >= maxy)
 		{
 			//reset the ball !
 			target_ball[i].pos_x = ball_start_x;
@@ -422,7 +422,7 @@ void welcome_page(void)
 	sleep(1);
     gotoxy(12,19);
     cout<<"Alireza Mikaeili";
-      sleep(7);
+      sleep(5);
 	for (int i=3; i>0; i--){
 	gotoxy(20,21);
     cout<<i;
@@ -446,7 +446,7 @@ int start(void)
     gotoxy(4,20);
         cout<<"For moving left press 'A' button";
 	gotoxy(10,22);
-	sleep(2);
+	sleep(1);
 	cout<<"Press Space to start";
 	while(1)
 	{
@@ -480,7 +480,6 @@ void losing(int &lose)   //call by reference
 }
 void winning()
 {
-	sleep(1);
 	system("cls");
 	for (int i = miny; i < maxy; i++)
     {
@@ -513,6 +512,7 @@ void winning()
         }
         cout<<'\n';
     }
+	sleep(1);
 	gotoxy(13,8);
         cout<<"BRICK BREAKER";
 		sleep(2);
