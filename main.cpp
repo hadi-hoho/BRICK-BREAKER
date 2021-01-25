@@ -71,6 +71,55 @@ struct ball
     
 }target_ball[ball_number];
 
+/*********************functions***************/
+
+void move_ball(void);
+void print_bricks(void);
+bool border_collision(void);
+void brick_collision(void);
+bool slider_collision(void);
+bool brick_del (void);
+bool print_screen (void);
+void check_left_chafe(void);
+void check_right_chafe(void);
+int slider_move(void);
+void initialize(void);
+void gotoxy(int xpos, int ypos);
+void welcome_page(void);
+int start(void);
+void pause(void);
+void losing(int &lose);
+void winning(void);
+/************************/
+
+int main()
+{
+    welcome_page();
+    initialize();
+
+    //adding a ball
+
+	int lose =1;
+	start();
+	while(1)
+	{		
+	print_screen();
+	pause();
+	move_ball();
+        border_collision();
+        brick_collision();
+	slider_collision();
+	brick_del();
+	slider_move();        
+        usleep(100000);
+	if(bricks==0)
+		winning();
+	for(int i=0;i<ball_number;i++)
+		if(target_ball[i].pos_y==maxy-1) 
+			losing(lose);			
+	}
+    return 0;
+}
 //move_ball moves the ball according to it's heading
 void move_ball(void)
 {
@@ -102,7 +151,7 @@ void move_ball(void)
 	}
 }
 
-void print_bricks()
+void print_bricks(void)
 {
 	for(int i=0;i<bricks_number;i++)
 	{
@@ -303,7 +352,7 @@ bool print_screen (void)
     return true;
 }
 
-void check_left_chafe()
+void check_left_chafe(void)
 {
 	for (int  i = 0; i < ball_number; i++)
 	{
@@ -313,7 +362,7 @@ void check_left_chafe()
 		}	
 	}
 }
-void check_right_chafe()
+void check_right_chafe(void)
 {
 	for (int  i = 0; i < ball_number; i++)
 	{
@@ -462,7 +511,7 @@ int start(void)
 	}
 }
 
-void pause()
+void pause(void)
 {
 	if (kbhit())
 		{
@@ -475,7 +524,7 @@ void pause()
 		}
 }
 
-void losing(int &lose)   //call by reference
+void losing(int &lose)  
 {
 	cout<<"You lost!"<<'\t';
 	sleep(2);
@@ -494,7 +543,7 @@ void losing(int &lose)   //call by reference
 	}
 }
 
-void winning()
+void winning(void)
 {
 	system("cls");
 	for (int i = miny; i < maxy; i++)
@@ -542,31 +591,4 @@ void winning()
 		exit (0);	
 }
 
-int main()
-{
-    welcome_page();
-    initialize();
 
-    //adding a ball
-
-	int lose =1;
-	start();
-	while(1)
-	{		
-	print_screen();
-	pause();
-	move_ball();
-        border_collision();
-        brick_collision();
-	slider_collision();
-	brick_del();
-	slider_move();        
-        usleep(100000);
-	if(bricks==0)
-		winning();
-	for(int i=0;i<ball_number;i++)
-		if(target_ball[i].pos_y==maxy-1) 
-			losing(lose);			
-	}
-    return 0;
-}
