@@ -96,6 +96,7 @@ int start(void);
 void pause(void);
 void losing(void);
 void winning(void);
+void check_chafe(int slider_moved , int slider_hit);
 /************************/
 
 int main()
@@ -106,30 +107,17 @@ int main()
 	start();
 	while(1)
 	{		
-	print_screen();
-	move_ball();
-    border_collision();
-    brick_collision();
-	brick_del();
-
-	int slider_hit =slider_collision();
-	int slider_moved =slider_move();     
-
-	if (slider_moved != 0 && slider_hit !=-1)
-	{
-		switch  (slider_moved)
-		{
-		case slider_right:
-			right_chafe(slider_hit);
-			break;
-		
-		case slider_left :
-			left_chafe(slider_hit);
-		}
-	}
-	usleep(100000);
-	if(bricks==0)
-		winning();			
+		print_screen();
+		move_ball();
+		int slider_moved =slider_move(); 
+		border_collision();
+		brick_collision();
+		brick_del();
+		int slider_hit =slider_collision();
+		check_chafe(slider_moved , slider_hit);
+		usleep(100000);
+		if(bricks==0)
+			winning();			
 	}
     return 0;
 }
@@ -364,6 +352,24 @@ bool print_screen (void)
     	
     return true;
 }
+//check_chafe 
+void check_chafe(int slider_moved , int slider_hit)
+{
+	if (slider_moved != 0 && slider_hit !=-1)
+	{
+		switch  (slider_moved)
+		{
+		case slider_right:
+			right_chafe(slider_hit);
+			break;
+		
+		case slider_left :
+			left_chafe(slider_hit);
+		}
+	}
+	
+}
+
 
 // left_chafe and right_chafe will change the speed of given ball 
 void left_chafe(int ball_index)
@@ -386,11 +392,11 @@ void right_chafe(int ball_index)
 	{
 	case north_east:
 	case south_east:
-		target_ball[ball_index].x_changes -= x_chafe_rate;
+		target_ball[ball_index].x_changes += x_chafe_rate;
 		break;
 	case north_west:
 	case south_west:
-		target_ball[ball_index].x_changes += x_chafe_rate;
+		target_ball[ball_index].x_changes -= x_chafe_rate;
 		break;
 	}
 }
@@ -621,5 +627,3 @@ void winning(void)
 		gotoxy(2,31);
 		exit (0);	
 }
-
-
