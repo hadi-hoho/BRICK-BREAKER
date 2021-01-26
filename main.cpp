@@ -14,6 +14,10 @@
 #define slider_start_x	16
 #define slider_y		28
 #define slider_speed 3
+#define slider_left 1
+#define slider_right 2
+
+#define x_chafe_rate 1
 
 #define ball_start_x 20
 #define ball_start_y 27
@@ -36,8 +40,8 @@ int bricks = bricks_number;
 
 #define ball_number		1
 
-int x_changes	=	2;
-int y_changes	=	1;
+#define x_changes_default	2;
+#define y_changes_default	1;
 using namespace std;
 
 //defing the array
@@ -66,7 +70,9 @@ struct ball
     int heading = north_east;
     bool visible = true;
     int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
-    int pos_y = ball_start_y; 
+    int pos_y = ball_start_y;
+	int x_changes = x_changes_default;
+	int y_changes = y_changes_default;
     char c = 'O';
     
 }target_ball[ball_number];
@@ -77,11 +83,11 @@ void move_ball(void);
 void print_bricks(void);
 bool border_collision(void);
 void brick_collision(void);
-bool slider_collision(void);
+int slider_collision(void);
 bool brick_del (void);
 bool print_screen (void);
-void check_left_chafe(void);
-void check_right_chafe(void);
+void left_chafe(int);
+void right_chafe(int);
 int slider_move(void);
 void initialize(void);
 void gotoxy(int xpos, int ypos);
@@ -104,14 +110,30 @@ int main()
 	while(1)
 	{		
 	print_screen();
-	pause();
 	move_ball();
-        border_collision();
-        brick_collision();
-	slider_collision();
+    border_collision();
+
+    brick_collision();
 	brick_del();
-	slider_move();        
-        usleep(100000);
+
+	int slider_hit =slider_collision();
+	int slider_moved =slider_move();     
+
+	if (slider_moved != 0 && slider_hit !=-1)
+	{
+		switch  (slider_moved)
+		{
+		case slider_right:
+			right_chafe(slider_hit);
+			break;
+		
+		case slider_left :
+			left_chafe(slider_hit);
+		}
+	}
+	
+
+    usleep(100000);
 	if(bricks==0)
 		winning();
 	for(int i=0;i<ball_number;i++)
@@ -128,23 +150,23 @@ void move_ball(void)
 		switch (target_ball[i].heading)
    		{
 	        case north_east: 
-        	    target_ball[i].pos_x +=x_changes ;
-	           	target_ball[i].pos_y -=y_changes ;
+        	    target_ball[i].pos_x +=target_ball[i].x_changes ;
+	           	target_ball[i].pos_y -=target_ball[i].y_changes ;
     	        break;
         	
 	        case north_west:
-        	    target_ball[i].pos_x -=x_changes ;
-	            target_ball[i].pos_y -=y_changes ;
+        	    target_ball[i].pos_x -=target_ball[i].x_changes ;
+	            target_ball[i].pos_y -=target_ball[i].y_changes ;
     	        break;
         	
  	       case south_west:
-  	            target_ball[i].pos_x -=x_changes ;
-  	            target_ball[i].pos_y +=y_changes ;
+  	            target_ball[i].pos_x -=target_ball[i].x_changes ;
+  	            target_ball[i].pos_y +=target_ball[i].y_changes ;
          	    break;
        		
 	        case south_east:
-  	          	target_ball[i].pos_x +=x_changes ;
-           		target_ball[i].pos_y +=y_changes ;
+  	          	target_ball[i].pos_x +=target_ball[i].x_changes ;
+           		target_ball[i].pos_y +=target_ball[i].y_changes ;
          	    break;
       		
    		}
@@ -171,21 +193,21 @@ bool border_collision(void)
 	for(int i=0;i<ball_number;i++)
 	{	
 		//barkhord ba divar rast	
-		if(target_ball[i].heading==north_east && target_ball[i].pos_x +x_changes>= maxx)
+		if(target_ball[i].heading==north_east && target_ball[i].pos_x +target_ball[i].x_changes>= maxx)
 			target_ball[i].heading=north_west;
-		else if(target_ball[i].heading==south_east && target_ball[i].pos_x +x_changes>= maxx)
+		else if(target_ball[i].heading==south_east && target_ball[i].pos_x +target_ball[i].x_changes>= maxx)
 			target_ball[i].heading=south_west;
 
 		//barkhord ba divar bala
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_y-y_changes<=miny)
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_y-target_ball[i].y_changes<=miny)
 			target_ball[i].heading=south_west;
-		else if(target_ball[i].heading==north_east && target_ball[i].pos_y-y_changes<=miny)
+		else if(target_ball[i].heading==north_east && target_ball[i].pos_y-target_ball[i].y_changes<=miny)
 			target_ball[i].heading=south_east;
 
 		//barkhord ba divar chap
-		else if(target_ball[i].heading==south_west && target_ball[i].pos_x -x_changes<= minx )
+		else if(target_ball[i].heading==south_west && target_ball[i].pos_x -target_ball[i].x_changes<= minx )
 			target_ball[i].heading=south_east;
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_x -x_changes<= minx )
+		else if(target_ball[i].heading==north_west && target_ball[i].pos_x -target_ball[i].x_changes<= minx )
 			target_ball[i].heading=north_east;
 		
 		//barkhord be payin
@@ -246,7 +268,9 @@ void brick_collision(void)
 			}	
 		}	
 }
-bool slider_collision(void)
+
+//if ball(s) hit the slider this func will change the heading of it and return the index of that ball
+int slider_collision(void)
 {
 	for (int i = 0; i < ball_number; i++)
 	{
@@ -260,9 +284,10 @@ bool slider_collision(void)
 			{
 				target_ball[i].heading = north_west;
 			}
+			return i;
 		}
 	}
-	return true;
+	return -1;
 }
 
 bool brick_del (void)
@@ -352,49 +377,78 @@ bool print_screen (void)
     return true;
 }
 
-void check_left_chafe(void)
+// left_chafe and right_chafe will change the speed of given ball 
+void left_chafe(int ball_index)
 {
-	for (int  i = 0; i < ball_number; i++)
+	switch (target_ball[ball_index].heading)
 	{
-		if (target_ball[i].pos_y==slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
-		{
-			x_changes+=1;
-		}	
+	case north_east:
+	case south_east:
+		target_ball[ball_index].x_changes -= x_chafe_rate;
+		break;
+	case north_west:
+	case south_west:
+		target_ball[ball_index].x_changes += x_chafe_rate;
+		break;
 	}
 }
-void check_right_chafe(void)
+void right_chafe(int ball_index)
 {
-	for (int  i = 0; i < ball_number; i++)
+	switch (target_ball[ball_index].heading)
 	{
-		if (target_ball[i].pos_y==slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
-		{
-			x_changes+=1;
-		}	
+	case north_east:
+	case south_east:
+		target_ball[ball_index].x_changes -= x_chafe_rate;
+		break;
+	case north_west:
+	case south_west:
+		target_ball[ball_index].x_changes += x_chafe_rate;
+		break;
 	}
+}
+
+void pause(void)
+{
+	if (kbhit())
+		{
+			char pause = getch();
+			if (int(pause) == 27)
+			{
+			cout<<"\n \tPress Enter to continue";
+			cin.get();
+			}
+		}
 }
 
 int slider_move(void)
 {
 	if(kbhit())
-		switch(getch())
+	{
+		char key = getch();
+		switch(int(key))
 		{
 			case 'a':
 			case 'A':
 				if((slider.x-slider_speed)<minx )
 					return 0;
 				slider.x -= slider_speed;
-				check_left_chafe();
+				return slider_left;
 				break;
 			case 'd':
 			case 'D':
 				if((slider.x+silder_length+slider_speed)>maxx)
 					return 0;
 				slider.x += slider_speed;
-				check_right_chafe();
+				return slider_right;
+				break;
+			case 27 :
+				cout<<"\n \tPress Enter to continue";
+				cin.get();
 				break;
 			default:
 				return 0;
 		}
+	}
 	return 0;
 }
 
@@ -511,18 +565,6 @@ int start(void)
 	}
 }
 
-void pause(void)
-{
-	if (kbhit())
-		{
-			char pause = getch();
-			if (int(pause) == 27)
-			{
-			cout<<"\n \tPress Enter to continue";
-			cin.get();
-			}
-		}
-}
 
 void losing(int &lose)  
 {
