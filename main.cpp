@@ -94,7 +94,7 @@ void gotoxy(int xpos, int ypos);
 void welcome_page(void);
 int start(void);
 void pause(void);
-void losing(int &lose);
+void losing(void);
 void winning(void);
 /************************/
 
@@ -103,16 +103,12 @@ int main()
     welcome_page();
     initialize();
 
-    //adding a ball
-
-	int lose =1;
 	start();
 	while(1)
 	{		
 	print_screen();
 	move_ball();
     border_collision();
-
     brick_collision();
 	brick_del();
 
@@ -131,14 +127,9 @@ int main()
 			left_chafe(slider_hit);
 		}
 	}
-	
-
-    usleep(100000);
+	usleep(100000);
 	if(bricks==0)
-		winning();
-	for(int i=0;i<ball_number;i++)
-		if(target_ball[i].pos_y==maxy-1) 
-			losing(lose);			
+		winning();			
 	}
     return 0;
 }
@@ -213,10 +204,7 @@ bool border_collision(void)
 		//barkhord be payin
 		else if(target_ball[i].pos_y >= maxy)
 		{
-			//reset the ball !
-			target_ball[i].pos_x = ball_start_x;
-			target_ball[i].pos_y = ball_start_y;
-			target_ball[i].heading = north_east;
+			losing();
 		}
 	}
 	return true;	
@@ -566,8 +554,9 @@ int start(void)
 }
 
 
-void losing(int &lose)  
+void losing(void)  
 {
+	static int lose=1;
 	cout<<"You lost!"<<'\t';
 	sleep(2);
 	if(lose<3) 
