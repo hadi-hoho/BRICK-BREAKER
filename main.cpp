@@ -1,9 +1,12 @@
 #include <iostream>
-//conio.h for getch and detection of pressing any key
-#include <conio.h>
+#include <conio.h>    //for getch and detection of pressing any key
 #include <unistd.h>   //for defining sleep
 #include <windows.h>  //for defining gotoxy
-#include <stdlib.h>  //for exiting when losing
+#include <stdlib.h>   //for exiting when losing
+
+//TODO : /adding level 1:6 , 2:6+3 , 3:6+3 2toop / changing bricks /
+//TODO : /adding timer / adding menu /
+//TODO : /slider move to left and right before start / changing ball heading before start /
 
 #define maxx	40
 #define maxy	30
