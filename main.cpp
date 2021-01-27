@@ -8,6 +8,8 @@
 //TODO : /adding timer / adding menu /
 //TODO : /slider move to left and right before start / changing ball heading before start /
 
+#define level_numbers 3
+int current_level = 1;
 #define maxx	40
 #define maxy	30
 #define minx	0
@@ -41,10 +43,10 @@
 #define bricks_culomn3	30
 int bricks = bricks_number;
 
-#define ball_number		1
+#define max_ball_number	2
 
-#define x_changes_default	2;
-#define y_changes_default	1;
+#define x_changes_default	2
+#define y_changes_default	1
 using namespace std;
 
 //defing the array
@@ -64,7 +66,10 @@ struct bricks
 	int x;
 	int y;
 	bool visibility=true;
-	bool del=false; 
+	bool del=false;
+	int health = 1;
+	char ch = '#';
+
 }brick[bricks_number];
 
 //struct of ball
@@ -77,8 +82,8 @@ struct ball
 	int x_changes = x_changes_default;
 	int y_changes = y_changes_default;
     char c = 'O';
-    
-}target_ball[ball_number];
+    bool active = false;
+}target_ball[max_ball_number];
 
 /*********************functions***************/
 
@@ -100,13 +105,14 @@ void pause(void);
 void losing(void);
 void winning(void);
 void check_chafe(int slider_moved , int slider_hit);
+void set_level(int level);
 /************************/
 
 int main()
 {
     welcome_page();
     initialize();
-
+	set_level(current_level);
 	start();
 	while(1)
 	{		
@@ -127,31 +133,36 @@ int main()
 //move_ball moves the ball according to it's heading
 void move_ball(void)
 {
-	for(int i=0;i<ball_number;i++)
+	for(int i=0;i<max_ball_number;i++)
 	{
-		switch (target_ball[i].heading)
-   		{
-	        case north_east: 
-        	    target_ball[i].pos_x +=target_ball[i].x_changes ;
-	           	target_ball[i].pos_y -=target_ball[i].y_changes ;
-    	        break;
-        	
-	        case north_west:
-        	    target_ball[i].pos_x -=target_ball[i].x_changes ;
-	            target_ball[i].pos_y -=target_ball[i].y_changes ;
-    	        break;
-        	
- 	       case south_west:
-  	            target_ball[i].pos_x -=target_ball[i].x_changes ;
-  	            target_ball[i].pos_y +=target_ball[i].y_changes ;
-         	    break;
-       		
-	        case south_east:
-  	          	target_ball[i].pos_x +=target_ball[i].x_changes ;
-           		target_ball[i].pos_y +=target_ball[i].y_changes ;
-         	    break;
-      		
-   		}
+		if (target_ball[i].active)
+		{
+			switch (target_ball[i].heading)
+			{
+				case north_east: 
+					target_ball[i].pos_x +=target_ball[i].x_changes ;
+					target_ball[i].pos_y -=target_ball[i].y_changes ;
+					break;
+				
+				case north_west:
+					target_ball[i].pos_x -=target_ball[i].x_changes ;
+					target_ball[i].pos_y -=target_ball[i].y_changes ;
+					break;
+				
+			case south_west:
+					target_ball[i].pos_x -=target_ball[i].x_changes ;
+					target_ball[i].pos_y +=target_ball[i].y_changes ;
+					break;
+				
+				case south_east:
+					target_ball[i].pos_x +=target_ball[i].x_changes ;
+					target_ball[i].pos_y +=target_ball[i].y_changes ;
+					break;
+				
+			}
+		}
+		
+		
 	}
 }
 
@@ -164,7 +175,7 @@ void print_bricks(void)
 			for(int j=0;j<bricks_length;j++)
 			{
 				for(int k=0;k<bricks_width;k++)
-					screen[brick[i].y+k][brick[i].x+j]='#';
+					screen[brick[i].y+k][brick[i].x+j]=brick[i].ch;
 			}
 		}
 	}
@@ -172,30 +183,33 @@ void print_bricks(void)
 
 bool border_collision(void)
 {
-	for(int i=0;i<ball_number;i++)
+	for(int i=0;i<max_ball_number;i++)
 	{	
-		//barkhord ba divar rast	
-		if(target_ball[i].heading==north_east && target_ball[i].pos_x +target_ball[i].x_changes>= maxx)
-			target_ball[i].heading=north_west;
-		else if(target_ball[i].heading==south_east && target_ball[i].pos_x +target_ball[i].x_changes>= maxx)
-			target_ball[i].heading=south_west;
-
-		//barkhord ba divar bala
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_y-target_ball[i].y_changes<=miny)
-			target_ball[i].heading=south_west;
-		else if(target_ball[i].heading==north_east && target_ball[i].pos_y-target_ball[i].y_changes<=miny)
-			target_ball[i].heading=south_east;
-
-		//barkhord ba divar chap
-		else if(target_ball[i].heading==south_west && target_ball[i].pos_x -target_ball[i].x_changes<= minx )
-			target_ball[i].heading=south_east;
-		else if(target_ball[i].heading==north_west && target_ball[i].pos_x -target_ball[i].x_changes<= minx )
-			target_ball[i].heading=north_east;
-		
-		//barkhord be payin
-		else if(target_ball[i].pos_y >= maxy)
+		if (target_ball[i].active)
 		{
-			losing();
+			//barkhord ba divar rast	
+			if(target_ball[i].heading==north_east && target_ball[i].pos_x +target_ball[i].x_changes>= maxx)
+				target_ball[i].heading=north_west;
+			else if(target_ball[i].heading==south_east && target_ball[i].pos_x +target_ball[i].x_changes>= maxx)
+				target_ball[i].heading=south_west;
+
+			//barkhord ba divar bala
+			else if(target_ball[i].heading==north_west && target_ball[i].pos_y-target_ball[i].y_changes<=miny)
+				target_ball[i].heading=south_west;
+			else if(target_ball[i].heading==north_east && target_ball[i].pos_y-target_ball[i].y_changes<=miny)
+				target_ball[i].heading=south_east;
+
+			//barkhord ba divar chap
+			else if(target_ball[i].heading==south_west && target_ball[i].pos_x -target_ball[i].x_changes<= minx )
+				target_ball[i].heading=south_east;
+			else if(target_ball[i].heading==north_west && target_ball[i].pos_x -target_ball[i].x_changes<= minx )
+				target_ball[i].heading=north_east;
+			
+			//barkhord be payin
+			else if(target_ball[i].pos_y >= maxy)
+			{
+				losing();
+			}
 		}
 	}
 	return true;	
@@ -203,7 +217,9 @@ bool border_collision(void)
 
 void brick_collision(void)
 {	
-		for (int i = 0; i < ball_number; i++)
+	for (int i = 0; i < max_ball_number; i++)
+	{
+		if (target_ball[i].active)
 		{
 			for (int j = 0; j < bricks_number; j++)
 			{
@@ -245,27 +261,31 @@ void brick_collision(void)
 					}
 				}
 			}	
-		}	
+		}
+	}	
 }
 
 //if ball(s) hit the slider this func will change the heading of it and return the index of that ball
 int slider_collision(void)
 {
-	for (int i = 0; i < ball_number; i++)
+	for (int i = 0; i < max_ball_number; i++)
 	{
-		if (target_ball[i].pos_y >=slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
+		if (target_ball[i].active)
 		{
-			if (target_ball[i].heading == south_east )
+			if (target_ball[i].pos_y >=slider_y && target_ball[i].pos_x >= slider.x && target_ball[i].pos_x <= slider.x + silder_length)
 			{
-				target_ball[i].heading = north_east;
+				if (target_ball[i].heading == south_east )
+				{
+					target_ball[i].heading = north_east;
+				}
+				if (target_ball[i].heading == south_west)
+				{
+					target_ball[i].heading = north_west;
+				}
+				return i;
 			}
-			if (target_ball[i].heading == south_west)
-			{
-				target_ball[i].heading = north_west;
-			}
-			return i;
 		}
-	}
+	}	
 	return -1;
 }
 
@@ -284,17 +304,29 @@ bool brick_del (void)
 		}
 	for (int i = 0; i < bricks_number; i++)
 	{
-		for (int j = 0; j < ball_number; j++)
+		if (brick[i].visibility)
 		{
-			if (brick[i].visibility)
+			for (int j = 0; j < max_ball_number; j++)
 			{
-				if (brick[i].x <= target_ball[j].pos_x && brick[i].x + bricks_length >= target_ball[j].pos_x )
+				if (target_ball[j].active)
 				{
 					
-					if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
+					if (brick[i].x <= target_ball[j].pos_x && brick[i].x + bricks_length >= target_ball[j].pos_x )
 					{
-						brick[i].del = true;
-						bricks--;
+						
+						if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
+						{
+							if (brick[i].health == 1)
+							{
+								brick[i].del = true;
+								bricks--;
+							}
+							else 
+							{
+								brick[i].ch = '#';
+								brick[i].health --;
+							}
+						}
 					}
 				}
 			}
@@ -336,8 +368,13 @@ bool print_screen (void)
 	}
 
     //adding the ball(s)
-    screen[target_ball[0].pos_y][target_ball[0].pos_x] = target_ball[0].c;
-    
+	for (int i = 0; i < max_ball_number; i++)
+	{
+		if (target_ball[i].active)
+		{
+			screen[target_ball[i].pos_y][target_ball[i].pos_x] = target_ball[i].c;
+		}
+	}
     print_bricks();
 
     //printing the array
@@ -478,6 +515,61 @@ void gotoxy(int xpos, int ypos)
 	HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
 	scrn.X = xpos; scrn.Y = ypos;
 	SetConsoleCursorPosition(hOuput,scrn);
+}
+
+void set_level (int level)
+{
+	if (level == 1)
+	{
+		bricks = 6;
+		for (int i = 0; i < 9; i++)
+		{
+			if (i>=3 && i<6)
+			{
+				brick[i].visibility = false;
+				brick[i].del = true;
+			}
+			else
+			{
+				brick[i].del = false;
+				brick[i].visibility = true;
+			}
+		}
+		target_ball[0].active = true;
+	}
+	else if (level == 2)
+	{
+		bricks = 9;
+		for (int i = 0; i < 9; i++)
+		{
+			if (i>=3 && i<6)
+			{
+
+				brick[i].health = 2;
+				brick[i].ch = '$';
+			}
+			brick[i].del = false;
+			brick[i].visibility = true;
+			
+		}
+		target_ball[0].active = true;
+	}
+	else if (level == 3)
+	{
+		bricks = 9;
+		for (int i = 0; i < 9; i++)
+		{
+			if (i>=3 && i<6)
+			{
+				brick[i].health = 2;
+				brick[i].ch = '$';
+			}
+			brick[i].visibility = true;
+			brick[i].del = false;
+		}
+		target_ball[0].active = true;
+	}
+	
 }
 
 void welcome_page(void) 
@@ -628,5 +720,15 @@ void winning(void)
         cout<<"You won!";
 		sleep(5);
 		gotoxy(2,31);
-		exit (0);	
+	if (current_level != level_numbers)
+	{
+		current_level ++;
+		cout<<"moving to level "<<current_level;
+		set_level(current_level);
+		start();
+	}
+	else
+	{
+		exit(0);
+	}
 }
