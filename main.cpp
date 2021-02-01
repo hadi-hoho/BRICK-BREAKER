@@ -5,7 +5,7 @@
 #include <stdlib.h>   //for exiting when losing
 
 //TODO : /adding level 1:6 , 2:6+3 , 3:6+3 2toop / changing bricks /
-//TODO : /adding timer / adding menu /
+//TODO : /adding timer / adding menu=>OK /
 //TODO : /slider move to left and right before start / changing ball heading before start /
 
 #define level_numbers 3
@@ -101,6 +101,7 @@ void initialize(void);
 void gotoxy(int xpos, int ypos);
 void welcome_page(void);
 int start(void);
+int menu(void);
 void pause(void);
 void losing(void);
 void winning(void);
@@ -111,6 +112,7 @@ void set_level(int level);
 int main()
 {
     welcome_page();
+    menu();
     initialize();
 	set_level(current_level);
 	start();
@@ -654,6 +656,67 @@ int start(void)
 	}
 }
 
+int menu(void)
+{
+   while (true)
+   {
+   for (int i = miny; i < maxy; i++)
+    {
+        if (i==(maxy-1) || i==miny)
+        {
+            for (int j = minx; j < maxx; j++)
+            {
+                screen[i][j]= '_';
+            }
+        }
+    }
+    for (int i=miny+1;i<maxy;i++)
+    {
+     	screen[i][minx]='|';
+    	screen[i][maxx-1]='|';
+    }
+     for (int i = miny; i < maxy; i++)
+    {
+    	
+        for (int j = minx; j < maxx; j++)
+        {
+            cout<<screen[i][j];
+        }
+        cout<<'\n';
+    }
+    gotoxy(14,8);
+    cout<<"BRICK BREAKER";
+	sleep(1);
+    gotoxy(18,11);
+    cout<<"MENU";
+	sleep(1);
+    gotoxy(7,16);
+    cout<<"Press 'S' to start new game";
+	sleep(1);
+    gotoxy(6,18);
+    cout<<"Press 'R' to resume last game";
+	sleep(1);
+    gotoxy(10,20);
+    cout<<"Press 'Esc' to exit";
+      while(1)
+	{
+		if (kbhit)
+		{
+			char ch;
+			ch = getch();
+			if (int(ch) == 83 || int(ch) == 115)
+			return 0;
+			else if (int(ch) == 27)
+			{
+			gotoxy(1,31);
+			exit(0);	
+			}
+		}	
+		else
+			system("cls");
+	}
+   }
+} 
 
 void losing(void)  
 {
