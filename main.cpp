@@ -107,6 +107,8 @@ void losing(void);
 void winning(void);
 void check_chafe(int slider_moved , int slider_hit);
 void set_level(int level);
+void print_array(void);
+void print_border(void);
 /************************/
 
 int main()
@@ -336,11 +338,9 @@ bool brick_del (void)
 	}
 	return true;
 }
-
-bool print_screen (void)
+void print_border(void)
 {
-	system("cls");
-    for (int i = miny; i < maxy; i++)
+	for (int i = miny; i < maxy; i++)
     {
         if (i==(maxy-1) || i==miny)
         {
@@ -362,7 +362,24 @@ bool print_screen (void)
      	screen[i][minx]='|';
     	screen[i][maxx-1]='|';
     }
-
+}
+void print_array(void)
+{
+	for (int i = miny; i < maxy; i++)
+    {
+    	
+        for (int j = minx; j < maxx; j++)
+        {
+            cout<<screen[i][j];
+        }
+        cout<<'\n';
+    }
+}
+bool print_screen (void)
+{
+	system("cls");
+    
+	print_border();
     //adding the slider
     for(int j= slider.x;j<(silder_length+slider.x);j++)
     {
@@ -380,15 +397,7 @@ bool print_screen (void)
     print_bricks();
 
     //printing the array
-    for (int i = miny; i < maxy; i++)
-    {
-    	
-        for (int j = minx; j < maxx; j++)
-        {
-            cout<<screen[i][j];
-        }
-        cout<<'\n';
-    }
+    print_array();
     cout<<endl<<endl<<target_ball[0].pos_x<<","<<target_ball[0].pos_y;
     
     	
@@ -578,30 +587,9 @@ void welcome_page(void)
 {
    while (true)
    {
-   for (int i = miny; i < maxy; i++)
-    {
-        if (i==(maxy-1) || i==miny)
-        {
-            for (int j = minx; j < maxx; j++)
-            {
-                screen[i][j]= '_';
-            }
-        }
-    }
-    for (int i=miny+1;i<maxy;i++)
-    {
-     	screen[i][minx]='|';
-    	screen[i][maxx-1]='|';
-    }
-     for (int i = miny; i < maxy; i++)
-    {
-    	
-        for (int j = minx; j < maxx; j++)
-        {
-            cout<<screen[i][j];
-        }
-        cout<<'\n';
-    }
+    print_border();
+    print_array();
+    
     gotoxy(8,8);
     cout<<"Welcome to BRICK BREAKER";
 	sleep(1);
@@ -633,7 +621,7 @@ int start(void)
 	slider.x=slider_start_x;
 	target_ball[0].pos_x=ball_start_x;
 	target_ball[0].pos_y=ball_start_y;
-	target_ball[0].heading=north_east;
+	//target_ball[0].heading=north_east;
 	system("cls");
 	print_screen();
 	gotoxy(4,18);
@@ -645,14 +633,42 @@ int start(void)
 	cout<<"Press Space to start";
 	while(1)
 	{
-		if (kbhit)
+		if(kbhit)
 		{
-			ch = getch();
-			if (int(ch) == 32)
-			return 0;
+			char key = getch();
+			switch(int(key))
+			{
+			case 'a':
+			case 'A':
+				if((slider.x-slider_speed)<minx )
+					break;
+				slider.x -= slider_speed;
+				target_ball[0].pos_x-= slider_speed;
+				print_screen();	
+				break;
+			case 'd':
+			case 'D':
+				if((slider.x+silder_length+slider_speed)>maxx)
+					break;
+				slider.x += slider_speed;
+				target_ball[0].pos_x += slider_speed;
+				print_screen();	
+				break;
+			case 'e':
+			case 'E':
+				target_ball[0].heading=north_east;
+				print_screen();
+				return 0;
+				break;
+			case 'q':
+			case 'Q':
+				target_ball[0].heading=north_west;
+				print_screen();
+				return 0;
+				break;					
+			}	
 		}
-		else
-			system("cls");		
+			
 	}
 }
 
@@ -660,30 +676,10 @@ int menu(void)
 {
    while (true)
    {
-   for (int i = miny; i < maxy; i++)
-    {
-        if (i==(maxy-1) || i==miny)
-        {
-            for (int j = minx; j < maxx; j++)
-            {
-                screen[i][j]= '_';
-            }
-        }
-    }
-    for (int i=miny+1;i<maxy;i++)
-    {
-     	screen[i][minx]='|';
-    	screen[i][maxx-1]='|';
-    }
-     for (int i = miny; i < maxy; i++)
-    {
-    	
-        for (int j = minx; j < maxx; j++)
-        {
-            cout<<screen[i][j];
-        }
-        cout<<'\n';
-    }
+   
+    print_border();
+    print_array();
+    
     gotoxy(14,8);
     cout<<"BRICK BREAKER";
 	sleep(1);
@@ -741,37 +737,8 @@ void losing(void)
 void winning(void)
 {
 	system("cls");
-	for (int i = miny; i < maxy; i++)
-    {
-        if (i==(maxy-1) || i==miny)
-        {
-            for (int j = minx; j < maxx; j++)
-            {
-                screen[i][j]= '_';
-            }
-        }
-        else
-		{
-            for (int j = minx; j < maxx; j++)
-            {
-                screen[i][j]= ' ';
-            }
-        }
-    }
-    for (int i=miny+1;i<maxy;i++)
-    {
-     	screen[i][minx]='|';
-    	screen[i][maxx-1]='|';
-    }
-	for (int i = miny; i < maxy; i++)
-    {
-    	
-        for (int j = minx; j < maxx; j++)
-        {
-            cout<<screen[i][j];
-        }
-        cout<<'\n';
-    }
+    print_border();
+    print_array();
 	sleep(1);
 	gotoxy(13,8);
         cout<<"BRICK BREAKER";
