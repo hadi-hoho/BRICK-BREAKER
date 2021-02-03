@@ -105,6 +105,7 @@ int menu(void);
 void pause(void);
 void losing(void);
 void winning(void);
+void Timer(void);
 void check_chafe(int slider_moved , int slider_hit);
 void set_level(int level);
 void print_array(void);
@@ -121,6 +122,7 @@ int main()
 	while(1)
 	{		
 		print_screen();
+		Timer();
 		move_ball();
 		int slider_moved =slider_move(); 
 		border_collision();
@@ -398,11 +400,34 @@ bool print_screen (void)
 
     //printing the array
     print_array();
-    cout<<endl<<endl<<target_ball[0].pos_x<<","<<target_ball[0].pos_y;
-    
     	
     return true;
 }
+
+void Timer(void)
+{
+static int sec=0;
+static int min=0;
+static int temp=0;
+temp++;
+if (temp == 3)
+{
+	sec++;
+	temp=0;
+}
+if (sec==60)
+{
+min++;
+sec=0;
+}
+gotoxy(8,32);
+cout << "-------------------------\n";
+gotoxy(8,33);
+cout << "| "<< min << " Minutes | "<<  sec << " Seconds |" << endl;  
+gotoxy(8,34);
+cout << "-------------------------\n";
+}
+
 //check_chafe 
 void check_chafe(int slider_moved , int slider_hit)
 {
@@ -617,20 +642,14 @@ void welcome_page(void)
 
 int start(void)
 {
-	char ch;
 	slider.x=slider_start_x;
 	target_ball[0].pos_x=ball_start_x;
 	target_ball[0].pos_y=ball_start_y;
 	//target_ball[0].heading=north_east;
 	system("cls");
 	print_screen();
-	gotoxy(4,18);
-        cout<<"For moving right press 'D' button";
-    gotoxy(4,20);
-        cout<<"For moving left press 'A' button";
 	gotoxy(10,22);
 	sleep(1);
-	cout<<"Press Space to start";
 	while(1)
 	{
 		if(kbhit)
@@ -672,8 +691,44 @@ int start(void)
 	}
 }
 
+void instructions(void)
+{
+	system("cls");
+    print_border();
+    print_array();
+    gotoxy(14,8);
+    cout<<"BRICK BREAKER";
+	sleep(1);
+    gotoxy(14,11);
+    cout<<"Instructions";
+	sleep(1);
+	gotoxy(12,16);
+        cout<<"Moving right: 'D'";
+    gotoxy(12,18);
+        cout<<"Moving left: 'A'";
+    gotoxy(10,20);
+        cout<<"Heading top right: 'E'";
+	gotoxy(10,22);
+		cout<<"Heading top left: 'Q'";
+	sleep(1);
+    gotoxy(6,24);
+    cout<<"Press 'Esc' to go back to menu";
+      while(1)
+	{
+		if (kbhit)
+		{
+		char ch;
+		ch = getch();
+		if (int(ch) == 27)
+		break;	
+		}
+	}
+  menu();
+} 
+
 int menu(void)
 {
+	system("cls");
    while (true)
    {
    
@@ -692,7 +747,10 @@ int menu(void)
     gotoxy(6,18);
     cout<<"Press 'R' to resume last game";
 	sleep(1);
-    gotoxy(10,20);
+	gotoxy(6,20);
+    cout<<"Press 'I' to see instructions";
+	sleep(1);
+    gotoxy(10,22);
     cout<<"Press 'Esc' to exit";
       while(1)
 	{
@@ -702,6 +760,8 @@ int menu(void)
 			ch = getch();
 			if (int(ch) == 83 || int(ch) == 115)
 			return 0;
+			else if (int(ch) == 73 || int(ch) == 105)
+			instructions();
 			else if (int(ch) == 27)
 			{
 			gotoxy(1,31);
@@ -754,6 +814,7 @@ void winning(void)
 	{
 		current_level ++;
 		cout<<"moving to level "<<current_level;
+		sleep(2);
 		set_level(current_level);
 		start();
 	}
