@@ -3,7 +3,7 @@
 #include <unistd.h>   //for defining sleep
 #include <windows.h>  //for defining gotoxy
 #include <stdlib.h>   //for exiting when losing
-
+#include <fstream>
 //TODO : /adding level 1:6 , 2:6+3 , 3:6+3 2toop / changing bricks /
 //TODO : /adding timer / adding menu=>OK /
 //TODO : /slider move to left and right before start / changing ball heading before start /
@@ -43,7 +43,7 @@ int current_level = 1;
 #define bricks_culomn3	30
 int bricks = bricks_number;
 
-#define max_ball_number	2
+#define max_ball_number		2
 
 #define x_changes_default	2
 #define y_changes_default	1
@@ -75,7 +75,7 @@ struct bricks
 //struct of ball
 struct ball
 {
-    int heading = north_east;
+    int heading = 0;
     bool visible = true;
     int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
     int pos_y = ball_start_y;
@@ -103,7 +103,7 @@ void welcome_page(void);
 int start(void);
 int menu(void);
 void pause(void);
-void losing(void);
+void losing(int ball_index);
 void winning(void);
 void Timer(void);
 void check_chafe(int slider_moved , int slider_hit);
@@ -214,7 +214,7 @@ bool border_collision(void)
 			//barkhord be payin
 			else if(target_ball[i].pos_y >= maxy)
 			{
-				losing();
+				losing(i);
 			}
 		}
 	}
@@ -495,6 +495,7 @@ int slider_move(void)
 	if(kbhit())
 	{
 		char key = getch();
+		if(current_level != 3)
 		switch(int(key))
 		{
 			case 'a':
@@ -518,6 +519,38 @@ int slider_move(void)
 			default:
 				return 0;
 		}
+		else
+			switch(int(key))
+			{
+			case 'a':
+			case 'A':
+				if((slider.x-slider_speed)<minx )
+					break;
+				slider.x -= slider_speed;
+				target_ball[1].pos_x-= slider_speed;
+				print_screen();	
+				break;
+			case 'd':
+			case 'D':
+				if((slider.x+silder_length+slider_speed)>maxx)
+					break;
+				slider.x += slider_speed;
+				target_ball[1].pos_x += slider_speed;
+				print_screen();	
+				break;
+			case 'e':
+			case 'E':
+				target_ball[1].heading=north_east;
+				print_screen();
+				return 0;
+				break;
+			case 'q':
+			case 'Q':
+				target_ball[1].heading=north_west;
+				print_screen();
+				return 0;
+				break;					
+			}
 	}
 	return 0;
 }
@@ -589,6 +622,8 @@ void set_level (int level)
 			
 		}
 		target_ball[0].active = true;
+		target_ball[0].x_changes=x_changes_default;
+		target_ball[0].y_changes=y_changes_default;
 	}
 	else if (level == 3)
 	{
@@ -603,7 +638,13 @@ void set_level (int level)
 			brick[i].visibility = true;
 			brick[i].del = false;
 		}
-		target_ball[0].active = true;
+
+		for(int i=0;i<max_ball_number;i++)
+		{
+			target_ball[i].active = true;
+			target_ball[i].x_changes=x_changes_default;
+			target_ball[i].y_changes=y_changes_default;
+		}
 	}
 	
 }
@@ -643,8 +684,14 @@ void welcome_page(void)
 int start(void)
 {
 	slider.x=slider_start_x;
-	target_ball[0].pos_x=ball_start_x;
-	target_ball[0].pos_y=ball_start_y;
+	for(int i=0;i<max_ball_number;i++)
+	{
+		if(target_ball[i].active)
+		{
+			target_ball[i].pos_x=ball_start_x;
+			target_ball[i].pos_y=ball_start_y;
+		}
+	}
 	//target_ball[0].heading=north_east;
 	system("cls");
 	print_screen();
@@ -662,7 +709,9 @@ int start(void)
 				if((slider.x-slider_speed)<minx )
 					break;
 				slider.x -= slider_speed;
-				target_ball[0].pos_x-= slider_speed;
+				for(int i=0;i<max_ball_number;i++)
+					if(target_ball[i].active)
+						target_ball[i].pos_x-= slider_speed;
 				print_screen();	
 				break;
 			case 'd':
@@ -670,25 +719,30 @@ int start(void)
 				if((slider.x+silder_length+slider_speed)>maxx)
 					break;
 				slider.x += slider_speed;
-				target_ball[0].pos_x += slider_speed;
+				for(int i=0;i<max_ball_number;i++)
+					if(target_ball[i].active)
+						target_ball[i].pos_x+= slider_speed;
 				print_screen();	
 				break;
 			case 'e':
 			case 'E':
 				target_ball[0].heading=north_east;
 				print_screen();
+				//if(current_level == 3)
+				//	target_ball[1].pos_x = target_ball[0].pos_x;
 				return 0;
 				break;
 			case 'q':
 			case 'Q':
 				target_ball[0].heading=north_west;
 				print_screen();
+				//if(current_level == 3)
+				//	target_ball[1].pos_x = target_ball[0].pos_x;
 				return 0;
 				break;					
 			}	
 		}
-			
-	}
+	}   
 }
 
 void instructions(void)
@@ -774,9 +828,18 @@ int menu(void)
    }
 } 
 
-void losing(void)  
+void losing(int ball_index)  
 {
 	static int lose=1;
+	if(current_level ==3 )
+	{
+		target_ball[ball_index].active = false;
+		if(target_ball[0].active == false && target_ball[1].active == false)
+			lose=3;
+		else
+			return;	
+	}
+	
 	cout<<"You lost!"<<'\t';
 	sleep(2);
 	if(lose<3) 
@@ -792,6 +855,7 @@ void losing(void)
 		sleep(3);
 		exit(0);
 	}
+	
 }
 
 void winning(void)
@@ -808,7 +872,7 @@ void winning(void)
 	sleep(1);
 	 gotoxy(15,14);
         cout<<"You won!";
-		sleep(5);
+		sleep(3);
 		gotoxy(2,31);
 	if (current_level != level_numbers)
 	{
