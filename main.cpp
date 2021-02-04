@@ -105,6 +105,7 @@ int menu(void);
 void pause(void);
 void losing(int ball_index);
 void winning(void);
+void level_start(void);
 void Timer(void);
 void check_chafe(int slider_moved , int slider_hit);
 void set_level(int level);
@@ -403,14 +404,53 @@ bool print_screen (void)
     	
     return true;
 }
-
+void level_start(void) 
+{
+	system("cls");
+   while (true)
+   {
+    print_border();
+    print_array();
+	sleep(2);
+	gotoxy(13,8);
+        cout<<"BRICK BREAKER";
+		sleep(1);
+    gotoxy(16,10);
+        cout<<"Level "<<current_level;
+    sleep(1);
+		if (current_level>1)
+		{
+			gotoxy(3,12);
+			cout<<"'$' bricks should be broken twice!";
+			if (current_level>2)
+			{
+			gotoxy(8,14);
+			cout<<"Now, there are 2 balls!";
+			gotoxy(6,15);
+			cout<<"Start moving them separately";
+			gotoxy(8,17);
+			cout<<"You have only 2 minutes!";
+			}
+		}
+	gotoxy(13,20);
+        cout<<"Are you ready?";
+        sleep(4);
+    gotoxy(15,22);
+        cout<<"Let's go!";
+        sleep(1);
+        system("cls");
+   			break;
+   }
+}
 void Timer(void)
 {
+	if(current_level!=3)
+	{
 	static int sec=0;
 	static int min=0;
 	static int temp=0;
 	static int last_level = current_level;
-	if(last_level != current_level)
+		if(last_level != current_level)
 	{
 		min=0;
 		sec=0;
@@ -433,6 +473,39 @@ void Timer(void)
 	cout << "| "<< min << " Minutes | "<<  sec << " Seconds |" << endl;  
 	gotoxy(8,34);
 	cout << "-------------------------\n";
+	}
+	else
+	{
+	static int sec=60;
+	static int min=1;
+	static int temp=0;
+	temp++;
+	if (temp == 3)
+	{
+		sec--;
+		temp=0;
+	}
+	if (sec==-1)
+	{
+		min--;
+		sec=59;
+	}
+	if(min==0 && sec==0)
+	{
+		sleep(2);
+		cout<<"You lost!\t";
+		sleep(1);
+		cout<<"You can try again later";
+		sleep(3);
+		exit(0);
+	}
+	gotoxy(8,32);
+	cout << "-------------------------\n";
+	gotoxy(8,33);
+	cout << "| "<< min << " Minutes | "<<  sec << " Seconds |" << endl;  
+	gotoxy(8,34);
+	cout << "-------------------------\n";
+	}
 }
 
 //check_chafe 
@@ -690,6 +763,7 @@ void welcome_page(void)
 
 int start(void)
 {
+	level_start();
 	slider.x=slider_start_x;
 	for(int i=0;i<max_ball_number;i++)
 	{
