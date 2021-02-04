@@ -406,26 +406,33 @@ bool print_screen (void)
 
 void Timer(void)
 {
-static int sec=0;
-static int min=0;
-static int temp=0;
-temp++;
-if (temp == 3)
-{
-	sec++;
-	temp=0;
-}
-if (sec==60)
-{
-min++;
-sec=0;
-}
-gotoxy(8,32);
-cout << "-------------------------\n";
-gotoxy(8,33);
-cout << "| "<< min << " Minutes | "<<  sec << " Seconds |" << endl;  
-gotoxy(8,34);
-cout << "-------------------------\n";
+	static int sec=0;
+	static int min=0;
+	static int temp=0;
+	static int last_level = current_level;
+	if(last_level != current_level)
+	{
+		min=0;
+		sec=0;
+		last_level=current_level;
+	}
+	temp++;
+	if (temp == 3)
+	{
+		sec++;
+		temp=0;
+	}
+	if (sec==60)
+	{
+		min++;
+		sec=0;
+	}
+	gotoxy(8,32);
+	cout << "-------------------------\n";
+	gotoxy(8,33);
+	cout << "| "<< min << " Minutes | "<<  sec << " Seconds |" << endl;  
+	gotoxy(8,34);
+	cout << "-------------------------\n";
 }
 
 //check_chafe 
