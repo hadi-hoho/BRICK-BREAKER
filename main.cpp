@@ -23,6 +23,7 @@ int current_level = 1;
 #define slider_right 2
 
 #define x_chafe_rate 1
+#define corner_default_x_changer 4
 
 #define ball_start_x 20
 #define ball_start_y 27
@@ -112,8 +113,8 @@ void set_level(int level);
 void print_array(void);
 void print_border(void);
 void reset_ball_changes(void);
-void load_level (void)
-void save_c_level (void)
+void load_level (void);
+void save_c_level (void);
 /************************/
 
 int main()
@@ -292,8 +293,25 @@ int slider_collision(void)
 				{
 					target_ball[i].heading = north_west;
 				}
+
+
+				if (target_ball[i].pos_x == slider.x)
+				{
+					target_ball[i].heading = north_west;
+					target_ball[i].x_changes = corner_default_x_changer;
+				}
+				else if (target_ball[i].pos_x == slider.x + silder_length)
+				{
+					target_ball[i].heading = north_east;
+					target_ball[i].x_changes = corner_default_x_changer;
+				}
+
+				
 				return i;
 			}
+			
+			
+			
 		}
 	}	
 	return -1;
