@@ -112,8 +112,8 @@ void set_level(int level);
 void print_array(void);
 void print_border(void);
 void reset_ball_changes(void);
-void load_level (void)
-void save_c_level (void)
+void load_level (void);
+void save_c_level (void);
 /************************/
 
 int main()
