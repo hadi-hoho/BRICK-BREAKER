@@ -297,18 +297,7 @@ int slider_collision(void)
 }
 
 bool brick_del (void)
-{
-	static int cnt=0;
-	for (int i = 0; i < bricks_number; i++)
-		if(brick[i].del == true)
-		{			
-			if(cnt==1)
-			{
-				brick[i].visibility = false;
-				cnt=0;	
-			}
-			cnt++;			
-		}
+{	
 	for (int i = 0; i < bricks_number; i++)
 	{
 		if (brick[i].visibility)
@@ -325,7 +314,7 @@ bool brick_del (void)
 						{
 							if (brick[i].health == 1)
 							{
-								brick[i].del = true;
+								brick[i].visibility = false;
 								bricks--;
 							}
 							else 
@@ -450,7 +439,7 @@ void Timer(void)
 	static int min=0;
 	static int temp=0;
 	static int last_level = current_level;
-		if(last_level != current_level)
+	if(last_level != current_level)
 	{
 		min=0;
 		sec=0;
@@ -750,7 +739,7 @@ void welcome_page(void)
 	sleep(1);
     gotoxy(12,19);
     cout<<"Alireza Mikaeili";
-      sleep(5);
+      sleep(3);
 	for (int i=3; i>0; i--){
 	gotoxy(19,21);
     cout<<i;
@@ -763,6 +752,7 @@ void welcome_page(void)
 
 int start(void)
 {
+	
 	level_start();
 	slider.x=slider_start_x;
 	for(int i=0;i<max_ball_number;i++)
