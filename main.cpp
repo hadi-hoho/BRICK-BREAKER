@@ -3,7 +3,7 @@
 #include <unistd.h>   //for defining sleep
 #include <windows.h>  //for defining gotoxy
 #include <stdlib.h>   //for exiting when losing
-#include <fstream>
+#include <fstream>	  //for working with files
 //TODO : /adding level 1:6 , 2:6+3 , 3:6+3 2toop / changing bricks /
 //TODO : /adding timer / adding menu=>OK /
 //TODO : /slider move to left and right before start / changing ball heading before start /
@@ -111,6 +111,9 @@ void check_chafe(int slider_moved , int slider_hit);
 void set_level(int level);
 void print_array(void);
 void print_border(void);
+void reset_ball_changes(void);
+void load_level (void)
+void save_c_level (void)
 /************************/
 
 int main()
@@ -655,8 +658,56 @@ void gotoxy(int xpos, int ypos)
 	SetConsoleCursorPosition(hOuput,scrn);
 }
 
+
+void save_c_level (void)
+{
+	ofstream file ;
+	file.open("saves.txt");
+	if (file.is_open())
+	{
+		file.clear();
+		file<<current_level;
+		file.close();
+	}
+	else
+	{
+		cout<<"ERROR in saving !!!"<<endl;
+		sleep(10);
+	}
+}
+
+void load_level (void)
+{
+	ifstream file ;
+	file.open("saves.txt");
+	if (file.is_open())
+	{
+		int saved_level;
+		file>>saved_level;
+		current_level = saved_level;
+		file.close();
+	}
+	else
+	{
+		cout<<"ERROR in loading !!!"<<endl;
+		sleep(10);
+	}
+}
+
+
+void reset_ball_changes(void)
+{
+	for (int i = 0; i < max_ball_number; i++)
+	{
+		target_ball[i].x_changes=x_changes_default;
+		target_ball[i].y_changes=y_changes_default;
+	}
+}
+
 void set_level (int level)
 {
+	level_start();
+	reset_ball_changes();
 	if (level == 1)
 	{
 		bricks = 6;
@@ -711,10 +762,9 @@ void set_level (int level)
 		for(int i=0;i<max_ball_number;i++)
 		{
 			target_ball[i].active = true;
-			target_ball[i].x_changes=x_changes_default;
-			target_ball[i].y_changes=y_changes_default;
 		}
 	}
+	save_c_level();
 	
 }
 
@@ -753,7 +803,6 @@ void welcome_page(void)
 int start(void)
 {
 	
-	level_start();
 	slider.x=slider_start_x;
 	for(int i=0;i<max_ball_number;i++)
 	{
@@ -892,6 +941,12 @@ int menu(void)
 			gotoxy(1,31);
 			exit(0);	
 			}
+			else if (int(ch) == 82 || int(ch) == 114)
+			{
+				load_level();
+				return 0;
+			}
+			
 		}	
 		else
 			system("cls");
@@ -917,6 +972,7 @@ void losing(int ball_index)
 	{
 		cout<<"Remain chances="<<3-lose;
 		lose++;
+		reset_ball_changes();
 		sleep(3);
 		start();
 	}
