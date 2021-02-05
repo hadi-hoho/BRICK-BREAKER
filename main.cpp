@@ -545,10 +545,38 @@ void left_chafe(int ball_index)
 	case north_east:
 	case south_east:
 		target_ball[ball_index].x_changes -= x_chafe_rate;
+
+		if (target_ball[ball_index].x_changes < 0)
+		{
+			if (target_ball[ball_index].heading == north_east)
+			{
+				target_ball[ball_index].heading = north_west;
+			}
+			if (target_ball[ball_index].heading == south_east)
+			{
+				target_ball[ball_index].heading = south_west;
+			}		
+		}
+
 		break;
+
 	case north_west:
 	case south_west:
 		target_ball[ball_index].x_changes += x_chafe_rate;
+
+		if (target_ball[ball_index].x_changes < 0)
+		{
+			if (target_ball[ball_index].heading == north_west)
+			{
+				target_ball[ball_index].heading = north_east;
+			}
+			if (target_ball[ball_index].heading == south_west)
+			{
+				target_ball[ball_index].heading = south_east;
+			}
+			
+		}
+
 		break;
 	}
 }
