@@ -492,9 +492,32 @@ void Timer(void)
 		sleep(2);
 		cout<<"You lost!\t";
 		sleep(1);
-		cout<<"You can try again later";
-		sleep(3);
-		exit(0);
+		cout<<"Thanks for playing BRICK BREAKER\n";
+		sleep(1);
+		cout<<"Play again?\t"<<"Y|N\t";
+		while(1)
+	{
+		if (kbhit)
+		{
+			char ch;
+			ch = getch();
+			if (int(ch) == 89 || int(ch) == 121)
+			{
+			current_level = 1;
+			set_level(current_level);
+			start();
+			}
+			else if (int(ch) == 78 || int(ch) == 110)
+			{
+			cout<<"See you later!";
+			sleep(2);
+			exit(0);	
+			}
+			
+		}	
+		else
+			system("cls");
+	}
 	}
 	gotoxy(8,32);
 	cout << "-------------------------\n";
@@ -1011,9 +1034,32 @@ void losing(int ball_index)
 	}
 	else
 	{
-		cout<<"You can try again later";
-		sleep(3);
-		exit(0);
+		cout<<"Thanks for playing BRICK BREAKER\n";
+		sleep(1);
+		cout<<"Play again?\t"<<"Y|N\t";
+		while(1)
+	{
+		if (kbhit)
+		{
+			char ch;
+			ch = getch();
+			if (int(ch) == 89 || int(ch) == 121)
+			{
+			current_level = 1;
+			set_level(current_level);
+			start();
+			}
+			else if (int(ch) == 78 || int(ch) == 110)
+			{
+			cout<<"See you later!";
+			sleep(2);
+			exit(0);	
+			}
+			
+		}	
+		else
+			system("cls");
+	}
 	}
 	
 }
@@ -1033,10 +1079,10 @@ void winning(void)
 	 gotoxy(15,14);
         cout<<"You won!";
 		sleep(3);
-		gotoxy(2,31);
 	if (current_level != level_numbers)
 	{
 		current_level ++;
+		gotoxy(2,31);
 		cout<<"moving to level "<<current_level;
 		sleep(2);
 		set_level(current_level);
@@ -1044,6 +1090,34 @@ void winning(void)
 	}
 	else
 	{
-		exit(0);
+		gotoxy(4,17);
+		cout<<"Thanks for playing BRICK BREAKER";
+		sleep(1);
+		gotoxy(11,19);
+		cout<<"Play again?\t"<<"Y|N";
+		while(1)
+	{
+		if (kbhit)
+		{
+			char ch;
+			ch = getch();
+			if (int(ch) == 89 || int(ch) == 121)
+			{
+				current_level = 1;
+			set_level(current_level);
+			start();
+			}
+			else if (int(ch) == 78 || int(ch) == 110)
+			{
+				gotoxy(2,31);
+			cout<<"See you later!";
+			sleep(2);
+			exit(0);	
+			}
+			
+		}	
+		else
+			system("cls");
+	}
 	}
 }
