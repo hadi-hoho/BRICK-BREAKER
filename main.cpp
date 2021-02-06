@@ -236,9 +236,9 @@ void brick_collision(void)
 			{
 				if (brick[j].visibility)
 				{
-					if (brick[j].x <= target_ball[i].pos_x && brick[j].x + bricks_length >= target_ball[i].pos_x )
+					if (brick[j].x <= target_ball[i].pos_x && (brick[i].x + bricks_length-1) >= target_ball[i].pos_x )
 					{	
-						if (brick[j].y <= target_ball[i].pos_y &&  brick[j].y + bricks_width >= target_ball[i].pos_y)
+						if (brick[j].y <= target_ball[i].pos_y &&  (brick[i].y + bricks_width-1)>= target_ball[i].pos_y)
 						{
 							switch (target_ball[i].heading)
 							{
@@ -315,10 +315,10 @@ bool brick_del (void)
 				if (target_ball[j].active)
 				{
 					
-					if (brick[i].x <= target_ball[j].pos_x && brick[i].x + bricks_length >= target_ball[j].pos_x )
+					if (brick[i].x <= target_ball[j].pos_x && (brick[i].x + bricks_length-1) >= target_ball[j].pos_x )
 					{
 						
-						if (brick[i].y <= target_ball[j].pos_y &&  brick[i].y + bricks_width >= target_ball[j].pos_y)
+						if (brick[i].y <= target_ball[j].pos_y &&  (brick[i].y + bricks_width-1) >= target_ball[j].pos_y)
 						{
 							if (brick[i].health == 1)
 							{
