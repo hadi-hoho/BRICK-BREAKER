@@ -4,9 +4,6 @@
 #include <windows.h>  //for defining gotoxy
 #include <stdlib.h>   //for exiting when losing
 #include <fstream>	  //for working with files
-//TODO : /adding level 1:6 , 2:6+3 , 3:6+3 2toop / changing bricks /
-//TODO : /adding timer / adding menu=>OK /
-//TODO : /slider move to left and right before start / changing ball heading before start /
 
 #define level_numbers 3
 int current_level = 1;
@@ -116,6 +113,7 @@ void print_border(void);
 void reset_ball_changes(void);
 void load_level (void);
 void save_c_level (void);
+void proper_heading(int ball_index);
 /************************/
 
 int main()
@@ -556,41 +554,17 @@ void left_chafe(int ball_index)
 	case north_east:
 	case south_east:
 		target_ball[ball_index].x_changes -= x_chafe_rate;
-
-		if (target_ball[ball_index].x_changes < 0)
-		{
-			if (target_ball[ball_index].heading == north_east)
-			{
-				target_ball[ball_index].heading = north_west;
-			}
-			if (target_ball[ball_index].heading == south_east)
-			{
-				target_ball[ball_index].heading = south_west;
-			}		
-		}
-
 		break;
 
 	case north_west:
 	case south_west:
 		target_ball[ball_index].x_changes += x_chafe_rate;
-
-		if (target_ball[ball_index].x_changes < 0)
-		{
-			if (target_ball[ball_index].heading == north_west)
-			{
-				target_ball[ball_index].heading = north_east;
-			}
-			if (target_ball[ball_index].heading == south_west)
-			{
-				target_ball[ball_index].heading = south_east;
-			}
-			
-		}
-
 		break;
 	}
+
+	proper_heading(ball_index);
 }
+
 void right_chafe(int ball_index)
 {
 	switch (target_ball[ball_index].heading)
@@ -603,6 +577,46 @@ void right_chafe(int ball_index)
 	case south_west:
 		target_ball[ball_index].x_changes -= x_chafe_rate;
 		break;
+	}
+
+	proper_heading(ball_index);
+	
+}
+
+//proper_heading fixes the heading of the ball if the x_changes is 0 or less
+void proper_heading(int ball_index)
+{
+	if (target_ball[ball_index].x_changes <= 0)
+	{
+		if (target_ball[ball_index].heading == north_west)
+		{
+			target_ball[ball_index].heading = north_east;
+		}
+		if (target_ball[ball_index].heading == north_east)
+		{
+			target_ball[ball_index].heading = north_west;
+		}
+
+		if (target_ball[ball_index].heading == south_west)
+		{
+			target_ball[ball_index].heading = south_east;
+		}
+		if (target_ball[ball_index].heading == south_east)
+		{
+			target_ball[ball_index].heading = south_west;
+		}	
+	
+
+		if (target_ball[ball_index].x_changes == 0)
+		{
+			target_ball[ball_index].x_changes ++;
+		}
+		else
+		{
+			target_ball[ball_index].x_changes = -target_ball[ball_index].x_changes;
+		}
+		
+		
 	}
 }
 
