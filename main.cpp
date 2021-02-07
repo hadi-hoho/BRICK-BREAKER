@@ -20,7 +20,6 @@ int current_level = 1;
 #define slider_right 2
 
 #define x_chafe_rate 1
-#define corner_default_x_changer 4
 
 #define ball_start_x 20
 #define ball_start_y 27
