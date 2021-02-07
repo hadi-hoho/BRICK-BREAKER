@@ -84,6 +84,7 @@ struct ball
 	int y_changes = y_changes_default;
     char c = 'O';
     bool active = false;
+    bool throwing = false;
 }target_ball[max_ball_number];
 
 /*********************functions***************/
@@ -431,7 +432,7 @@ void level_start(void)
 		}
 	gotoxy(13,20);
         cout<<"Are you ready?";
-        sleep(4);
+        sleep(2);
     gotoxy(15,22);
         cout<<"Let's go!";
         sleep(1);
@@ -623,7 +624,7 @@ int slider_move(void)
 	if(kbhit())
 	{
 		char key = getch();
-		if(current_level != 3)
+		if(current_level != 3 || target_ball[1].throwing == true)
 		switch(int(key))
 		{
 			case 'a':
@@ -647,7 +648,7 @@ int slider_move(void)
 			default:
 				return 0;
 		}
-		else
+		else 
 			switch(int(key))
 			{
 			case 'a':
@@ -669,12 +670,14 @@ int slider_move(void)
 			case 'e':
 			case 'E':
 				target_ball[1].heading=north_east;
+				target_ball[1].throwing = true;
 				print_screen();
 				return 0;
 				break;
 			case 'q':
 			case 'Q':
 				target_ball[1].heading=north_west;
+				target_ball[1].throwing = true;
 				print_screen();
 				return 0;
 				break;					
@@ -904,16 +907,15 @@ int start(void)
 			case 'E':
 				target_ball[0].heading=north_east;
 				print_screen();
-				//if(current_level == 3)
-				//	target_ball[1].pos_x = target_ball[0].pos_x;
+				target_ball[0].throwing=true;
 				return 0;
 				break;
 			case 'q':
 			case 'Q':
 				target_ball[0].heading=north_west;
+				target_ball[0].throwing=true;
 				print_screen();
-				//if(current_level == 3)
-				//	target_ball[1].pos_x = target_ball[0].pos_x;
+				
 				return 0;
 				break;					
 			}	
