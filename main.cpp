@@ -2,7 +2,7 @@
 #include <conio.h>    //for getch and detection of pressing any key
 #include <unistd.h>   //for defining sleep
 #include <windows.h>  //for defining gotoxy
-#include <stdlib.h>   //for exiting when losing
+#include <stdlib.h>   //for exiting when losing & system ("cls")
 #include <fstream>	  //for working with files
 
 #define level_numbers 3
@@ -215,7 +215,7 @@ bool border_collision(void)
 				target_ball[i].heading=north_east;
 			
 			//barkhord be payin
-			else if(target_ball[i].pos_y >= maxy)
+			else if(target_ball[i].pos_y >= maxy-1)
 			{
 				losing(i);
 			}
@@ -240,28 +240,40 @@ void brick_collision(void)
 						{
 							switch (target_ball[i].heading)
 							{
-								case north_east:
+								//jahate toop
+								case north_east: 
 									if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
+										//barkhord az samt rast ajor
 										target_ball[i].heading=north_west;
 									else
+										//barkhord az samt payin ajor
 										target_ball[i].heading=south_east;								
 									break;
+								//jahate toop
 								case north_west:
 									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn3+(bricks_length-1)))
+										//barkhord az samt chap ajor
 										target_ball[i].heading=north_east;
 									else
+										//barkhord az samt payin ajor
 										target_ball[i].heading=south_west;									
 									break;
+								//jahate toop
 								case south_east:
 									if(target_ball[i].pos_x == bricks_culomn1 || target_ball[i].pos_x == bricks_culomn2 || target_ball[i].pos_x == bricks_culomn3)
-										target_ball[i].heading=north_west;
+										//barkhord az samt chap ajor
+										target_ball[i].heading=south_west;
 									else
+										//barkhord az samt balaye ajor
 										target_ball[i].heading=north_east;
 									break;
+								//jahate toop
 								case south_west:
 									if(target_ball[i].pos_x == (bricks_culomn1+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn2+(bricks_length-1)) || target_ball[i].pos_x == (bricks_culomn3+(bricks_length-1)))
+										//barkhord az samt rast ajor
 										target_ball[i].heading=south_east;
 									else
+										//barkhord az samt balaye ajor
 										target_ball[i].heading=north_west;
 									break;
 								
@@ -395,18 +407,12 @@ bool print_screen (void)
     print_bricks();
 
     //printing the array
-    print_array();
-        gotoxy(12,30);
-    cout<<target_ball[0].pos_x<<","<<target_ball[0].pos_y;
-    gotoxy(20,30);
-    cout<<target_ball[1].pos_x<<","<<target_ball[1].pos_y;		
+    print_array();	
     return true;
 }
 void level_start(void) 
 {
 	system("cls");
-   while (true)
-   {
     print_border();
     print_array();
 	sleep(2);
@@ -437,8 +443,6 @@ void level_start(void)
         cout<<"Let's go!";
         sleep(1);
         system("cls");
-   			break;
-   }
 }
 void Timer(void)
 {
@@ -766,8 +770,9 @@ void load_level (void)
 	}
 	else
 	{
+		gotoxy(10,23);
 		cout<<"ERROR in loading !!!"<<endl;
-		sleep(10);
+		sleep(5);
 	}
 }
 
@@ -847,11 +852,9 @@ void set_level (int level)
 
 void welcome_page(void) 
 {
-   while (true)
-   {
+   
     print_border();
     print_array();
-    
     gotoxy(8,8);
     cout<<"Welcome to BRICK BREAKER";
 	sleep(1);
@@ -873,8 +876,7 @@ void welcome_page(void)
       	sleep(1);
 	}
 	system("cls");
-   	break;
-   }
+   
 }
 
 int start(void)
@@ -979,8 +981,7 @@ void instructions(void)
 int menu(void)
 {
 	system("cls");
-   while (true)
-   {
+   
    
     print_border();
     print_array();
@@ -1027,7 +1028,7 @@ int menu(void)
 		else
 			system("cls");
 	}
-   }
+   
 } 
 
 void losing(int ball_index)  
