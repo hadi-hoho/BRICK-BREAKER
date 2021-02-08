@@ -560,7 +560,7 @@ void left_chafe(int ball_index)
 
 	case north_west:
 	case south_west:
-		if(target_ball[ball_index].x_changes < bricks_length)
+		if(target_ball[ball_index].x_changes <= bricks_length)
 			target_ball[ball_index].x_changes += x_chafe_rate;
 		break;
 	}
@@ -574,7 +574,7 @@ void right_chafe(int ball_index)
 	{
 	case north_east:
 	case south_east:
-		if(target_ball[ball_index].x_changes < bricks_length)
+		if(target_ball[ball_index].x_changes <= bricks_length)
 			target_ball[ball_index].x_changes += x_chafe_rate;
 		break;
 	case north_west:
