@@ -74,7 +74,7 @@ struct ball
 {
     int heading = 0;
     bool visible = true;
-    int pos_x = ball_start_x; //index of posision of ball , in the middle bottom for defualt (higher than slider)
+    int pos_x = ball_start_x; 
     int pos_y = ball_start_y;
 	int x_changes = x_changes_default;
 	int y_changes = y_changes_default;
@@ -396,7 +396,10 @@ bool print_screen (void)
 
     //printing the array
     print_array();
-    	
+        gotoxy(12,30);
+    cout<<target_ball[0].pos_x<<","<<target_ball[0].pos_y;
+    gotoxy(20,30);
+    cout<<target_ball[1].pos_x<<","<<target_ball[1].pos_y;		
     return true;
 }
 void level_start(void) 
@@ -557,7 +560,8 @@ void left_chafe(int ball_index)
 
 	case north_west:
 	case south_west:
-		target_ball[ball_index].x_changes += x_chafe_rate;
+		if(target_ball[ball_index].x_changes < bricks_length)
+			target_ball[ball_index].x_changes += x_chafe_rate;
 		break;
 	}
 
@@ -570,7 +574,8 @@ void right_chafe(int ball_index)
 	{
 	case north_east:
 	case south_east:
-		target_ball[ball_index].x_changes += x_chafe_rate;
+		if(target_ball[ball_index].x_changes < bricks_length)
+			target_ball[ball_index].x_changes += x_chafe_rate;
 		break;
 	case north_west:
 	case south_west:
@@ -612,7 +617,7 @@ void proper_heading(int ball_index)
 		}
 		else
 		{
-			target_ball[ball_index].x_changes = -target_ball[ball_index].x_changes;
+			target_ball[ball_index].x_changes = ((-1)*target_ball[ball_index].x_changes);
 		}
 		
 		
