@@ -215,7 +215,7 @@ bool border_collision(void)
 				target_ball[i].heading=north_east;
 			
 			//barkhord be payin
-			else if(target_ball[i].pos_y >= maxy-1)
+			else if(target_ball[i].pos_y >= maxy)
 			{
 				losing(i);
 			}
