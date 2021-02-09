@@ -628,19 +628,6 @@ void proper_heading(int ball_index)
 	}
 }
 
-void pause(void)
-{
-	if (kbhit())
-		{
-			char pause = getch();
-			if (int(pause) == 27)
-			{
-			cout<<"\n \tPress Enter to continue";
-			cin.get();
-			}
-		}
-}
-
 int slider_move(void)
 {
 	if(kbhit())
